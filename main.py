@@ -55,6 +55,7 @@ def FP(url, tag, class_name):
     # print(price)
 #################################################################################################
 
+
 # print("\n1.Emag:")
 # FindPrice(emag_url, "p", "product-new-price")
 # print("\n2.Dedeman:")
