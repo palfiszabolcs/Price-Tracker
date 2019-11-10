@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-# import lxml
 import re
 
 # 1.
@@ -15,7 +14,6 @@ dedeman_url = "https://www.dedeman.ro/ro/lance-pentru-k2-k3-karcher-vp120-2-642-
 # media: tag = "div" | class = "Price-current"
 mediagalaxy_url = "https://mediagalaxy.ro/laptop-hp-pavilion-15-cs1005nq-intel-core-i7-8565u-" \
                   "pana-la-4-6ghz-15-6-full-hd-8gb-ssd-256gb-nvidia-geforce-mx150-2gb-free-dos-argintiu/cpd/LAP6PT41EA/"
-
 # 4.
 # cel: tag = "div" | class = "pret_info"
 # cel: tag = "span" | class = "productPrice"
@@ -54,7 +52,6 @@ def FP(url, tag, class_name):
     # price = soup.find(tag, attrs={"class": class_name}).text.strip()
     # print(price)
 #################################################################################################
-
 
 # print("\n1.Emag:")
 # FindPrice(emag_url, "p", "product-new-price")
