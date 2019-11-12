@@ -85,9 +85,32 @@ fashiondays_url = "https://www.fashiondays.ro/p/pantofi-sport-slip-on-tricotati-
 hm_url = "https://www2.hm.com/ro_ro/productpage.0720504004.html"
 
 # 20.
-# SPORTISIMO: tag = "" | class = ""
+# SPORTISIMO: tag = "p" | class = "price"
 sportisimo_url = "https://www.sportisimo.ro/under-armour/cg-armour-mock/226188/"
 
+# 21.
+# DECATHLON: tag = "span" | class = "real_price_value"
+decathlon_url = "https://www.decathlon.ro/jacheta-sh100-x-warm-barbati-id_8526084.html?opeco=opeco:HPShops-ppt-reco6&type=opeco"
+
+# 22.
+# ELEFANT: tag = "div" | class = "current-price  sale-price"
+elefant_url = "https://www.elefant.ro/apa-de-parfum-euphoria-100-ml-pentru-femei_07e29b2d-9cd9-491e-b46f-9fcc86605fff"
+
+# 23.
+# FOOTSHOP: tag = "" | class = "ProductProperties_price_1rMbi"
+footshop_url = "https://www.footshop.eu/ro/incaltaminte-pentru-el/24388-reebok-club-c-85-white-green.html"
+
+# 24.
+# MOLO SPORT: tag = "" | class = ""
+molosport_url = "https://www.molo-sport.ro/vans/sk8-hi/180021/"
+
+# 25.
+# MARSO: tag = "div" | class = "retail-price-brutto"
+marso_url = "https://www.marso.ro/produs/anvelopa/nokian/turisme/anvelopa-de-iarna/wr-d3/195-65-r15/35860"
+
+# 26.
+# HERVIS: tag = "div" | class = "big-price"
+hervis_url = "https://www.hervis.ro/store/Echipamente/Rachete-%26-Accesorii/Tenis-de-Masa/Schildkr%C3%B6t/Carbotec-900/p/COLOR-2072619"
 
 #################################################################################################
 
@@ -99,12 +122,12 @@ def FindPrice(url, tag, class_name):
 
 #################################################################################################
 
-# html_content = requests.get(hm_url).text
+# html_content = requests.get(molosport_url).text
 # soup = BeautifulSoup(html_content, "html.parser")
-# tag = soup.find("span", attrs={"class:", "price-value"})
-# print(soup.text)
+# tag = soup.find("div", attrs={"class:", "price"}).text
+# print(tag)
 
-# FindPrice(sportisimo_url, "p", "price")
+FindPrice(hervis_url, "div", "big-price")
 
 # print("\n1.Emag:")
 # FindPrice(emag_url, "p", "product-new-price")
