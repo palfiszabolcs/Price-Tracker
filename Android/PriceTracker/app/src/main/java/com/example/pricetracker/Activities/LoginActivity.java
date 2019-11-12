@@ -1,4 +1,4 @@
-package com.example.pricetracker;
+package com.example.pricetracker.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,7 +11,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.example.pricetracker.R;
+
+public class LoginActivity extends AppCompatActivity {
 
     private EditText username;
     private EditText password;

@@ -1,4 +1,4 @@
-package com.example.pricetracker;
+package com.example.pricetracker.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +9,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.pricetracker.Models.User;
+import com.example.pricetracker.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText signUpUserName;
@@ -16,6 +23,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText signUpPassword;
     private EditText confirmPassword;
     private Button confirmButton;
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +34,12 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(),"Confirm button clicked", Toast.LENGTH_LONG).show();
-                Intent loginActivity = new Intent(getApplicationContext(), MainActivity.class);
+                String username = signUpUserName.getText().toString();
+                String password = signUpPassword.getText().toString();
+                String userEmail = email.getText().toString();
+                User user = new User(username, userEmail, password);
+                addNewUser(user);
+                Intent loginActivity = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(loginActivity);
             }
         });
@@ -37,5 +51,11 @@ public class RegisterActivity extends AppCompatActivity {
         signUpPassword = findViewById(R.id.signUpPassword);
         confirmPassword = findViewById(R.id.confirmPassword);
         confirmButton = findViewById(R.id.confirmButton);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+    }
+
+    public void addNewUser(User user){
+        mDatabase.child("Users").child("1").setValue(user);
     }
 }
