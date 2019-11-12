@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">PriceTracker</string>
+    <string name="loginTitle">Login</string>
+    <string name="userName">Username</string>
+    <string name="password">Password</string>
+    <string name="rememberCheckBox">Remember Me</string>
+    <string name="signInButton">Sign In</string>
+    <string name="registerLink">Not registered? Click here!</string>
+
+    <string name="signUpTitle">Sign Up</string>
+    <string name="signUpUserName">Username</string>
+    <string name="email">Email</string>
+    <string name="signUpPassword">Password</string>
+    <string name="confirmPassword">Confirm password</string>
+    <string name="confirmButton">Confirm</string>
+</resources>
