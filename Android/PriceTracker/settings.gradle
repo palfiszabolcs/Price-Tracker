@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name='Price Tracker'
+rootProject.name='PriceTracker'
