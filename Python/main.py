@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 import re
-
 #################################################################################################
 
 # 1.
@@ -86,6 +85,7 @@ hm_url = "https://www2.hm.com/ro_ro/productpage.0720504004.html"
 
 # 20.
 # SPORTISIMO: tag = "p" | class = "price"
+# tag = re.sub("cu TVA", '', tag)
 sportisimo_url = "https://www.sportisimo.ro/under-armour/cg-armour-mock/226188/"
 
 # 21.
@@ -97,7 +97,8 @@ decathlon_url = "https://www.decathlon.ro/jacheta-sh100-x-warm-barbati-id_852608
 elefant_url = "https://www.elefant.ro/apa-de-parfum-euphoria-100-ml-pentru-femei_07e29b2d-9cd9-491e-b46f-9fcc86605fff"
 
 # 23.
-# FOOTSHOP: tag = "" | class = "ProductProperties_price_1rMbi"
+# FOOTSHOP: tag = "p" | class = "ProductProperties_price_1rMbi"
+# tag = re.sub("cu TVA", '', tag)
 footshop_url = "https://www.footshop.eu/ro/incaltaminte-pentru-el/24388-reebok-club-c-85-white-green.html"
 
 # 24.
@@ -112,22 +113,52 @@ marso_url = "https://www.marso.ro/produs/anvelopa/nokian/turisme/anvelopa-de-iar
 # HERVIS: tag = "div" | class = "big-price"
 hervis_url = "https://www.hervis.ro/store/Echipamente/Rachete-%26-Accesorii/Tenis-de-Masa/Schildkr%C3%B6t/Carbotec-900/p/COLOR-2072619"
 
+# 27.
+# INTERSPORT: tag = "span" | class = "price"
+intersport_url = "https://www.intersport.ro/pd/converse-pantofi-ct-as164882c-164882c-248833.htm?lang=ro&path=-760105428&color=2995"
 #################################################################################################
+
+# 28.
+# SPORTSDIRECT: tag = "div" | class = ""
+sportsdirect_url = "https://ro.sportsdirect.com/adidas-predator-191-mens-sg-football-boots-193009#colcode=19300916"
+
+# 29.
+# AMAZON: tag = "span" " class = "priceblock_ourprice"
+amazon_url = "https://www.amazon.de/dp/B01LWMQDRQ?pf_rd_p=3fd79cda-4f47-4515-9585-b6087d8f2668&pd_rd_wg=a2paN&pf_rd_r=ZC6VASCBN7EPRQPXVSKA&ref_" \
+             "=pd_gw_unk&pd_rd_w=t2euo&pd_rd_r=73e57509-2957-498c-b330-44956712a5ed"
+
+# 30.
+# BUZZ SNEAKERS: tag = "div" | class = "product-price current-price  has-discount"
+buzzsneakers_url = "https://www.buzzsneakers.com/RON_ro/pantofi-sport/67896-ozweego"
+
+# 31.
+# LEROY MERLIN: tag = "div" | class = "product_price"
+leroy_url = "https://www.leroymerlin.ro/products/parchet/556/parchet-laminat-pin-callustro-8-mm-forte/35856"
+
+# 32.
+# BRICO DEPOT: tag = "div" | class = "product-price"
+brico_url = "https://www.bricodepot.ro/sali-de-baie/mobilier-baie/baza-suspendata-imandra-taupe-60-cm.html"
+
 
 def FindPrice(url, tag, class_name):
     html_content = requests.get(url).text
     soup = BeautifulSoup(html_content, "html.parser")
     price = soup.find(tag, attrs={"class": class_name}).text.strip()
-    print(price)
+    # print(price)
+    return price
 
 #################################################################################################
 
-# html_content = requests.get(molosport_url).text
-# soup = BeautifulSoup(html_content, "html.parser")
-# tag = soup.find("div", attrs={"class:", "price"}).text
+html_content = requests.get(mobile_url).text
+# print(html_content)
+soup = BeautifulSoup(html_content, "html.parser")
+# tag = soup.find("span", attrs={"class:", "h3 rbt-prime-price"}).text.strip(
+print(soup)
+# tag = re.sub("cu TVA", '', tag)
 # print(tag)
 
-FindPrice(hervis_url, "div", "big-price")
+# price = FindPrice(sportisimo_url, "p", "price")
+# print(price)
 
 # print("\n1.Emag:")
 # FindPrice(emag_url, "p", "product-new-price")
