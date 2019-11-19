@@ -11,10 +11,14 @@ import android.widget.Toast;
 
 import com.example.pricetracker.Models.User;
 import com.example.pricetracker.R;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -23,7 +27,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText signUpPassword;
     private EditText confirmPassword;
     private Button confirmButton;
-    private DatabaseReference mDatabase;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
     private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +42,8 @@ public class RegisterActivity extends AppCompatActivity {
                 String username = signUpUserName.getText().toString();
                 String password = signUpPassword.getText().toString();
                 String userEmail = email.getText().toString();
-                User user = new User(username, userEmail, password);
-                addNewUser(user);
-                Intent loginActivity = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(loginActivity);
+                addNewUser();
+
             }
         });
     }
@@ -51,11 +54,23 @@ public class RegisterActivity extends AppCompatActivity {
         signUpPassword = findViewById(R.id.signUpPassword);
         confirmPassword = findViewById(R.id.confirmPassword);
         confirmButton = findViewById(R.id.confirmButton);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
     }
 
-    public void addNewUser(User user){
-        mDatabase.child("Users").child("1").setValue(user);
+    public void addNewUser(){
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("Users/");
+        Map <String, String> user = new HashMap<>();
+        user.put("Name", signUpUserName.getText().toString());
+        user.put("Password", signUpPassword.getText().toString());
+        reference.setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getApplicationContext(),"Registration succesfull!", Toast.LENGTH_LONG).show();
+                Intent loginActivity = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(loginActivity);
+            }
+        });
+
     }
 }

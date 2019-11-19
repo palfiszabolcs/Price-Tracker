@@ -13,4 +13,8 @@
     <string name="signUpPassword">Password</string>
     <string name="confirmPassword">Confirm password</string>
     <string name="confirmButton">Confirm</string>
+
+    <string name="productName">Product Name</string>
+    <string name="productDescription">Product Description</string>
+    <string name="productPrice">Product Price</string>
 </resources>
