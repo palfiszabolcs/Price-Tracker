@@ -1,3 +1,4 @@
+import urllib.request
 import requests
 from bs4 import BeautifulSoup
 from firebase import firebase
@@ -17,7 +18,9 @@ emag_url = "https://www.emag.ro/bratara-fitness-xiaomi-mi-band-4-6934177710377/p
 dedeman_url = "https://www.dedeman.ro/ro/lance-pentru-k2-k3-karcher-vp120-2-642-724-0/p/1019260"
 
 # 3.
-# media: tag = "div" | class = "Price-current"
+# price: tag = "div" | class = "Price-current"
+# title: tag = "h1" | class = "font-bold leading-none text-black m-0 text-center text-base lg:text-3xl bg-gray-lighter lg:bg-transparent -mx-15px lg:mx-auto px-3 pt-4 pb-3 lg:p-0 border-b lg:border-b-0"
+# image = soup.find("div", attrs={"class": "ph-body"}).img['data-src']
 mediagalaxy_url = "https://mediagalaxy.ro/laptop-hp-pavilion-15-cs1005nq-intel-core-i7-8565u-" \
                   "pana-la-4-6ghz-15-6-full-hd-8gb-ssd-256gb-nvidia-geforce-mx150-2gb-free-dos-argintiu/cpd/LAP6PT41EA/"
 # 4.
@@ -145,21 +148,22 @@ brico_url = "https://www.bricodepot.ro/sali-de-baie/mobilier-baie/baza-suspendat
 
 #################################################################################################
 
+def find_price_emag(soup, tag, class_name):
+    price = soup.find(tag, attrs={"class": class_name}).text.strip()
+    s = list(price)
+    s.insert(-6, ",")
+    price = "".join(s)
+    return price
 
-def find_price(url, tag, class_name):
 
-    html_content = requests.get(url).text
-    soup = BeautifulSoup(html_content, "html.parser")
+def find_price(soup, tag, class_name):
     price = soup.find(tag, attrs={"class": class_name}).text.strip()
     return price
 
 
-def find_image(url, tag, class_name):
-
-    html_content = requests.get(url).text
-    soup = BeautifulSoup(html_content, "html.parser")
-    image = soup.find(tag, attrs={"class": class_name})
-    print(image)
+def find_title(soup, tag, class_name):
+    title = soup.find(tag, attrs={"class": class_name}).text.strip()
+    return title
 
 
 def get_site_address(url):
@@ -177,13 +181,27 @@ def get_info(url):
     address = get_site_address(url)
 
     if address == "emag.ro":
-        print("This site is emag")
+        print("Emag:")
+        title = find_title(soup, "h1", "page-title")
+        price = find_price_emag(soup, "p", "product-new-price")
+        image = soup.find("div", attrs={"class": "ph-body"}).img['data-src'].strip()
+        print("Product: " + title + "\nPrice: " + price + "\nImageURL: " + image)
 
     if address == "mediagalaxy.ro":
-        print("This site is mediagalaxy")
+        print("Mediagalaxy:")
+        title = find_title(soup, "h1", "font-bold leading-none text-black m-0 text-center text-base lg:text-3xl bg-gray-lighter lg:bg-transparent -mx-15px lg:mx-auto px-3 pt-4 pb-3 lg:p-0 border-b lg:border-b-0")
+        price = find_price(soup, "div", "Price-current")
+        image = soup.find("div", attrs={"class": "slick-slide slick-active slick-current"}).img['src'].strip()
+        print("Product: " + title + "\nPrice: " + price + "\nImageURL: " + image)
+
 
     if address == "flanco.ro":
-        print("This site is flanco")
+        print("Flanco:")
+        title = soup.find("h1", attrs={"id": "product-title"}).text.strip()
+        price = find_price(soup, "div", "produs-price")
+        image = soup.find("img", attrs={"class": "product-main-image-img desktop"})['data-lazy']
+        print("Product: " + title + "\nPrice: " + price + "\nImageURL: " + str(image))
+
 
     if address == "cel.ro":
         print("This site is cel")
@@ -239,7 +257,9 @@ def get_info(url):
 # get_info(emag_url)
 # get_info(mediagalaxy_url)
 # get_info(flanco_url)
-# get_info(cel_url)
+
+get_info(cel_url)
+
 # get_info(dedeman_url)
 # get_info(autovit_url)
 # get_info(altex_url)
@@ -257,13 +277,17 @@ def get_info(url):
 #
 # get_info(sportsdirect_url)
 #
-#
-# # find_image(emag_url, "div", "thumbnail-wrapper ph-card")
-# html_content = requests.get(emag_url).text
-# soup = BeautifulSoup(html_content, "html.parser")
-# image = soup.find("div", attrs={"class": "ph-body"}).img['data-src']
-# print(image)
+# TEST BENCH ######################
 
+
+# html_content = requests.get(flanco_url).text
+# soup = BeautifulSoup(html_content, "html.parser")
+# image = soup.find("img", attrs={"class": "product-main-image-img desktop"})['data-lazy']
+# print(image)
+#
+# urllib.request.urlretrieve(image, "000000001.jpg")
+#
+# TEST BENCH ######################
 
 
 
