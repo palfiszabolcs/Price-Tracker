@@ -1,10 +1,15 @@
 import requests
 from bs4 import BeautifulSoup
+from firebase import firebase
 import re
+
 #################################################################################################
 
 # 1.
-# emag: tag = "p" | class = "product-new-price"
+# emag
+# price: tag = "p" | class = "product-new-price"
+# title: tag = "h1" | class = "page-title"
+# image = soup.find("div", attrs={"class": "ph-body"}).img['data-src']
 emag_url = "https://www.emag.ro/bratara-fitness-xiaomi-mi-band-4-6934177710377/pd/DVG5SRBBM"
 
 # 2.
@@ -116,7 +121,6 @@ hervis_url = "https://www.hervis.ro/store/Echipamente/Rachete-%26-Accesorii/Teni
 # 27.
 # INTERSPORT: tag = "span" | class = "price"
 intersport_url = "https://www.intersport.ro/pd/converse-pantofi-ct-as164882c-164882c-248833.htm?lang=ro&path=-760105428&color=2995"
-#################################################################################################
 
 # 28.
 # SPORTSDIRECT: tag = "div" | class = ""
@@ -139,125 +143,153 @@ leroy_url = "https://www.leroymerlin.ro/products/parchet/556/parchet-laminat-pin
 # BRICO DEPOT: tag = "div" | class = "product-price"
 brico_url = "https://www.bricodepot.ro/sali-de-baie/mobilier-baie/baza-suspendata-imandra-taupe-60-cm.html"
 
+#################################################################################################
 
-def FindPrice(url, tag, class_name):
+
+def find_price(url, tag, class_name):
+
     html_content = requests.get(url).text
     soup = BeautifulSoup(html_content, "html.parser")
     price = soup.find(tag, attrs={"class": class_name}).text.strip()
-    # print(price)
     return price
+
+
+def find_image(url, tag, class_name):
+
+    html_content = requests.get(url).text
+    soup = BeautifulSoup(html_content, "html.parser")
+    image = soup.find(tag, attrs={"class": class_name})
+    print(image)
+
+
+def get_site_address(url):
+
+    pattern = r'[a-zA-z]+\.ro+|[a-zA-z]+\.com+|[a-zA-z]+\.eu+'
+    address = re.findall(pattern, url)
+    address = address[0]
+    return address
+
+
+def get_info(url):
+
+    html_content = requests.get(url).text
+    soup = BeautifulSoup(html_content, "html.parser")
+    address = get_site_address(url)
+
+    if address == "emag.ro":
+        print("This site is emag")
+
+    if address == "mediagalaxy.ro":
+        print("This site is mediagalaxy")
+
+    if address == "flanco.ro":
+        print("This site is flanco")
+
+    if address == "cel.ro":
+        print("This site is cel")
+
+    if address == "dedeman.ro":
+        print("This site is dedeman")
+
+    if address == "autovit.ro":
+        print("This site is autovit")
+
+    if address == "altex.ro":
+        print("This site is altex")
+
+    if address == "evomag.ro":
+        print("This site is evomag")
+
+    if address == "quickmobile.ro":
+        print("This site is quickmobile")
+
+    if address == "gymbeam.ro":
+        print("This site is gymbeam")
+
+    if address == "olx.ro":
+        print("This site is olx")
+
+    if address == "megaproteine.ro":
+        print("This site is megaproteine")
+
+    if address == "sportisimo.ro":
+        print("This site is sportisimo")
+
+    if address == "footshop.eu":
+        print("This site is footshop")
+
+    if address == "marso.ro":
+        print("This site is marso")
+
+    if address == "hervis.ro":
+        print("This site is hervis")
+
+    if address == "intersport.ro":
+        print("This site is intersport")
+
+    if address == "sportsdirect.com":
+        print("This site is sportsdirect")
+
+    if address == "ebay.com":
+        print("This site is ebay")
+
 
 #################################################################################################
 
-html_content = requests.get(mobile_url).text
-# print(html_content)
-soup = BeautifulSoup(html_content, "html.parser")
-# tag = soup.find("span", attrs={"class:", "h3 rbt-prime-price"}).text.strip(
-print(soup)
-# tag = re.sub("cu TVA", '', tag)
-# print(tag)
-
-# price = FindPrice(sportisimo_url, "p", "price")
-# print(price)
-
-# print("\n1.Emag:")
-# FindPrice(emag_url, "p", "product-new-price")
-# print("\n2.Dedeman:")
-# FindPrice(dedeman_url, "div", "product-price large")
-# print("\n3.MG:")
-# FindPrice(mediagalaxy_url, "div", "Price-current")
-# print("\n4.Cel:")
-# FindPrice(cel_url, "span", "productPrice")
-# print("\n5.Mobile " + "nem megy meg")
-# print("\n6.Autovit:")
-# FindPrice(autovit_url, "span", "offer-price__number")
-# print("\n7.FaceBook Marketplace: " + "nem megy meg")
-# print("\n8.Ebay:")
-# FindPrice(ebay_url, "span", "notranslate")
-
-#FindPrice(flanco_url, "div", "produs-price")
-
-
-
-
-# making a list of the tags
-# tags = [tag.name for tag in soup.find_all()]
-# tags = [str(tag) for tag in soup.find_all()]
-# print(tags)
-
-# # regex
-# price_pattern = r'[a-zA-z]*[pP]rice[a-zA-z]*'
-# current_price_pattern = r'[a-zA-z]*[pP]rice[a-zA-z]*[cC]urrent[a-zA-z]*'
-# price_regex = re.compile(price_pattern)
-# current_price_regex = re.compile(current_price_pattern)
+# get_info(emag_url)
+# get_info(mediagalaxy_url)
+# get_info(flanco_url)
+# get_info(cel_url)
+# get_info(dedeman_url)
+# get_info(autovit_url)
+# get_info(altex_url)
+# get_info(evomag_url)
+# get_info(quickmobile_url)
+# get_info(gymbeam_url)
+# get_info(olx_url)
+# get_info(megaproteine_url)
+# get_info(sportisimo_url)
+# get_info(footshop_url)
+# get_info(marso_url)
+# get_info(hervis_url)
+# get_info(intersport_url)
+# get_info(ebay_url)
 #
-# # request / soup
-# html_content = requests.get(autovit_url).text
+# get_info(sportsdirect_url)
+#
+#
+# # find_image(emag_url, "div", "thumbnail-wrapper ph-card")
+# html_content = requests.get(emag_url).text
 # soup = BeautifulSoup(html_content, "html.parser")
-# result = soup.find("span", attrs={"class": price_regex})
-# print(result.text)
+# image = soup.find("div", attrs={"class": "ph-body"}).img['data-src']
+# print(image)
 
-# result2 = result.find("div", attrs={"class": regex})
+
+
+
+
+#################################################################################################
+
+# price = find_price(ebay_url, "span", "notranslate")
+# get_site_address(mediagalaxy_url)
+# print(price)
+#
+# firebase = firebase.FirebaseApplication("https://price-tracker-7cfd7.firebaseio.com/", None)
+# data = {
+#     'Name': "Adidas",
+#     'Price': price,
+#     'Date': date
+# }
+#
+# result = firebase.post('price-tracker-7cfd7/Pistike', data)
+# result = firebase.post('price-tracker-7cfd7/Pistike', data)
+# result = firebase.post('price-tracker-7cfd7/Pistike', data)
+# result2 = firebase.post('price-tracker-7cfd7/John Connor', data)
+# result2 = firebase.post('price-tracker-7cfd7/John Connor', data)
+# print(result)
 # print(result2)
 
-# searching for a specific price
-
-# regex az arra, lassad ha kiadja
-
-# bmw_regex = r'[a-zA-z]*BMW[a-zA-z]*'
-# bmw_pattern = re.compile(bmw_regex)
-# html_content = requests.get(autovit_url).text
-# soup = BeautifulSoup(html_content, "html.parser")
-# result = soup.find_all(any, text=bmw_pattern)
-# print(result)
-# for tag in result:
-#     print(tag.text)
-
-# price = "9 999"
-# html_content = requests.get(autovit_url).text
-# soup = BeautifulSoup(html_content, "html.parser")
-# result = soup.find_all()
-#
-# price_regex = r'[a-zA-z]*[pP]rice[a-zA-z]*'
-# price_pattern = re.compile(price_regex)
-#
-# results = []
-# for tag in result:
-#     txt = tag.text.strip()
-# #     # print("######################",txt)
-#     if price in txt:
-#         # print("####", tag.attrs)
-#         results.append(tag)
-#
-# results2 = []
-# for tag in results:
-#     # print("@@@@", tag.text)
-#     if "price" in tag.text:
-#         # print("$$$$", tag.name, tag.text.strip())
-#         results2.append(tag)
-#
-# results3 = soup.find_all(attrs={"class": price_pattern})
-# # print(results3.text.strip())
-# for tag in results3:
-#     # print(tag.text.strip())
-#     if price in tag.text:
-#         print("^^^^", tag.name)
-#
-# # results4 = soup.findChildren(attrs={"class": price_pattern})
-# results4 = soup.findChildren(attrs={"class": price_pattern})
-# print("number of items in results4:", len(results4))
-# for tag in results4:
-#     print("%%%%", tag.text)
-
-# regex test
-# text = "this is the product-new-price " \
-#        " Price-current is something  " \
-#        "product-price large not"
-# pattern = r'[a-zA-z]*[pP]rice[a-zA-z]*'
-# pattern2 = r'[a-zA-Z]'
-# regex = re.compile(pattern2)
-# matches = regex.finditer(text)
-# for match in matches:
-#     print(match.string)
+#################################################################################################
 
 
+#################################################################################################
