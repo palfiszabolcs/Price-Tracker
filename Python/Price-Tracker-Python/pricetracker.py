@@ -44,8 +44,10 @@ facebook_marketplace_url = "https://www.facebook.com/marketplace/item/3301694179
 
 # 8.
 # ebay: tag = "span" | class = "notranslate"
-ebay_url = "https://www.ebay.com/itm/Adidas-UltraBoost-4-0-Mens-Running-Shoes-Tech-Ink-Glow-Blue-Size-9-5-G54002/163920485799" \
-       "?epid=10033867920&hash=item262a6c1da7:g:0EIAAOSwVc9dtdHe"
+ebay_url = "https://www.ebay.com/itm/Adidas-Ultraboost-J-Athletic-Running-Shoes-Trace-Blue-DB1427-NEW-Youth-4-5Y/" \
+           "123975539042?_trkparms=aid%3D555018%26algo%3DPL.SIM%26ao%3D1%26asc%3D20190212102350%26meid%3Dca8e6a32430c" \
+           "4c048e634c8ea5071844%26pid%3D100012%26rk%3D2%26rkt%3D12%26sd%3D163920485799%26itm%3D123975539042%26pmt%3D1%26" \
+           "noa%3D0%26pg%3D2047675&_trksid=p2047675.c100012.m1985"
 
 # 9.
 # FLANCO: tag = "div" | class = "produs-price"
@@ -77,7 +79,7 @@ gymbeam_url = "https://gymbeam.ro/kreatin-crea7in-300-g-gymbeam.html"
 
 # 16.
 # olx_url: tag = "div" | class = "price-label"
-olx_url = "https://www.olx.ro/oferta/canon-5d-mark-iii-5d-mark-3-IDcZmYd.html"
+olx_url = "https://www.olx.ro/oferta/google-pixel-2-black-IDcVstC.html#8b8cb9bb94"
 
 # 17.
 # MEGAPROTEINE: tag = "span" | class = "pret"
@@ -173,6 +175,9 @@ def get_site_address(url):
     address = address[0]
     return address
 
+def print_product_info(title, price, image):
+    print("Product: " + title + "\nPrice: " + price + "\nImageURL: " + image)
+
 
 def get_info(url):
 
@@ -185,81 +190,144 @@ def get_info(url):
         title = find_title(soup, "h1", "page-title")
         price = find_price_emag(soup, "p", "product-new-price")
         image = soup.find("div", attrs={"class": "ph-body"}).img['data-src'].strip()
-        print("Product: " + title + "\nPrice: " + price + "\nImageURL: " + image)
+        print_product_info(title, price, image)
 
     if address == "mediagalaxy.ro":
         print("Mediagalaxy:")
         title = find_title(soup, "h1", "font-bold leading-none text-black m-0 text-center text-base lg:text-3xl bg-gray-lighter lg:bg-transparent -mx-15px lg:mx-auto px-3 pt-4 pb-3 lg:p-0 border-b lg:border-b-0")
         price = find_price(soup, "div", "Price-current")
         image = soup.find("div", attrs={"class": "slick-slide slick-active slick-current"}).img['src'].strip()
-        print("Product: " + title + "\nPrice: " + price + "\nImageURL: " + image)
-
+        print_product_info(title, price, image)
 
     if address == "flanco.ro":
         print("Flanco:")
         title = soup.find("h1", attrs={"id": "product-title"}).text.strip()
         price = find_price(soup, "div", "produs-price")
         image = soup.find("img", attrs={"class": "product-main-image-img desktop"})['data-lazy']
-        print("Product: " + title + "\nPrice: " + price + "\nImageURL: " + str(image))
+        print_product_info(title, price, image)
 
 
     if address == "cel.ro":
-        print("This site is cel")
+        print("Cel:")
+        title = find_title(soup, "h1", "productName")
+        price = find_price(soup, "span", "productPrice") + " Lei"
+        image = soup.find("img", attrs={"id": "main-product-image"})['src'].strip()
+        print_product_info(title, price, image)
+
 
     if address == "dedeman.ro":
-        print("This site is dedeman")
+        print("Dedeman:")
+        title = find_title(soup, "h1", "no-margin-bottom product-title")
+        price = soup.find("div", attrs={"class": "product-price large"}).span.text.strip() + " Lei"
+        image = soup.find("img", attrs={"class": "slider-product-image img-responsive"})['src'].strip()
+        print_product_info(title, price, image)
+
 
     if address == "autovit.ro":
-        print("This site is autovit")
+        print("Autovit:")
+        title = find_title(soup, "span", "offer-title big-text fake-title")
+        price = find_price(soup, "span", "offer-price__number")
+        image = soup.find("div", attrs={"class": "photo-item"}).img['data-lazy'].strip()
+        print_product_info(title, price, image)
+
 
     if address == "altex.ro":
-        print("This site is altex")
+        print("Altex:")
+        title = find_title(soup, "h1", "font-bold leading-none text-black m-0 text-center text-base lg:text-3xl bg-gray-lighter lg:bg-transparent -mx-15px lg:mx-auto px-3 pt-4 pb-3 lg:p-0 border-b lg:border-b-0")
+        price = find_price(soup, "div", "Price-current")
+        image = soup.find("div", attrs={"class": "slick-slide slick-active slick-current"}).img['src'].strip()
+        print_product_info(title, price, image)
+
 
     if address == "evomag.ro":
-        print("This site is evomag")
+        print("Evomag:")
+        title = find_title(soup, "h1", "product_name")
+        price = find_price(soup, "div", "pret_rons")
+        image = soup.find("a", attrs={"class": "fancybox fancybox.iframe"}).img['src'].strip()
+        print_product_info(title, price, image)
+
 
     if address == "quickmobile.ro":
-        print("This site is quickmobile")
+        print("QuickMobile:")
+        title = find_title(soup, "div", "product-page-title page-product-title-wth")
+        price = find_price(soup, "div", "priceFormat total-price price-fav product-page-price")
+        image = soup.find("img", attrs={"class": "img-responsive image-gallery"})['src'].strip()
+        print_product_info(title, price, image)
+
 
     if address == "gymbeam.ro":
-        print("This site is gymbeam")
+        print("GymBeam:")
+        title = find_title(soup, "h1", "page-title")
+        price = find_price(soup, "span", "price")
+        image = soup.find("div", attrs={"class": "product media"}).img['data-src'].strip()
+        print_product_info(title, price, image)
 
+    # !!!!! Resolve exception when advert is no longer active !!!!
     if address == "olx.ro":
-        print("This site is olx")
+        print("OLX:")
+        title = soup.find("div", attrs={"class": "offer-titlebox"}).h1.text.strip()
+        price = find_price(soup, "div", "price-label")
+        image = soup.find("img", attrs={"class": "vtop bigImage {nr:1}"})['src'].strip()
+        print_product_info(title, price, image)
+
 
     if address == "megaproteine.ro":
-        print("This site is megaproteine")
+        print("MegaProteine:")
+        title = soup.find("h1").text.strip()
+        price = find_price(soup, "span", "pret")
+        image = soup.find("link", attrs={"rel": "image_src"})['href'].strip()
+        print_product_info(title, price, image)
 
     if address == "sportisimo.ro":
-        print("This site is sportisimo")
+        print("Sportisimo:")
+        title = soup.find("h1").text.strip()
+        price = soup.find("p", attrs={"class": "price"}).text.strip()
+        price = re.sub("cu TVA", '', price)
+        image = soup.find("a", attrs={"id": "product_slider_p226188_slide_0_link"}).img['src'].strip()
+        print_product_info(title, price, image)
+
 
     if address == "footshop.eu":
-        print("This site is footshop")
+        print("Footshop:")
+        title = soup.find("h1").text.strip()
+        price = soup.find("p", attrs={"class": "ProductProperties_price_1rMbi"}).text.strip()
+        price = re.sub("cu TVA", '', price)
+        # image = soup.find("img", attrs={"class": "ImageSlider_image_2Vl4h"}).text.strip()
+        print_product_info(title, price, "no image")
+
 
     if address == "marso.ro":
-        print("This site is marso")
+        print("Marso:")
+        title = soup.find("title").text.strip()
+        price = find_price(soup, "div", "retail-price-brutto")
+        image = soup.find("img", attrs={"class": "product-image ui centered middle aligned image"})['src'].strip()
+        print_product_info(title, price, image)
 
-    if address == "hervis.ro":
-        print("This site is hervis")
 
     if address == "intersport.ro":
-        print("This site is intersport")
+        print("Intersport")
+        title = soup.find("title").text.strip()
+        price = find_price(soup, "span", "price")
+        image = soup.find("div", attrs={"class": "image-container"}).img['src'].strip()
+        print_product_info(title, price, image)
 
-    if address == "sportsdirect.com":
-        print("This site is sportsdirect")
-
+    # !!!!! Resolve exception when advert is no longer active !!!!
     if address == "ebay.com":
-        print("This site is ebay")
+        print("Ebay:")
+        title = soup.find("title").text.strip()
+        price = soup.find("span", attrs={"id": "prcIsum"}).text.strip()
+        image = soup.find("img", attrs={"id": "icImg"})['src'].strip()
+        print_product_info(title, price, image)
 
+
+        # ebay: tag = "span" | class = "notranslate"
 
 #################################################################################################
 
 # get_info(emag_url)
 # get_info(mediagalaxy_url)
 # get_info(flanco_url)
-
-get_info(cel_url)
-
+# get_info(cel_url)
 # get_info(dedeman_url)
 # get_info(autovit_url)
 # get_info(altex_url)
@@ -269,24 +337,26 @@ get_info(cel_url)
 # get_info(olx_url)
 # get_info(megaproteine_url)
 # get_info(sportisimo_url)
+
 # get_info(footshop_url)
+
 # get_info(marso_url)
-# get_info(hervis_url)
 # get_info(intersport_url)
-# get_info(ebay_url)
+
+
+get_info(ebay_url)
 #
-# get_info(sportsdirect_url)
 #
 # TEST BENCH ######################
 
 
-# html_content = requests.get(flanco_url).text
+# html_content = requests.get(footshop_url).text
 # soup = BeautifulSoup(html_content, "html.parser")
-# image = soup.find("img", attrs={"class": "product-main-image-img desktop"})['data-lazy']
+# image = soup.find("div", attrs={"class": "slick-slide slick-active slick-current"})
 # print(image)
 #
-# urllib.request.urlretrieve(image, "000000001.jpg")
 #
+# urllib.request.urlretrieve(image, "000000001.jpg")
 # TEST BENCH ######################
 
 
