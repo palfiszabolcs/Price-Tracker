@@ -150,6 +150,19 @@ brico_url = "https://www.bricodepot.ro/sali-de-baie/mobilier-baie/baza-suspendat
 
 #################################################################################################
 
+# Currencies
+ron = "RON"
+euro = "€"
+dollar = "$"
+
+# Categories
+electronics = "Electronics"
+vehicles = "Vehicles"
+clothing = "Clothig"
+sports = "Sports"
+other = "Other"
+# - Industrial stuff
+
 def find_price_emag(soup, tag, class_name):
     price = soup.find(tag, attrs={"class": class_name}).text.strip()
     s = list(price)
@@ -175,11 +188,14 @@ def get_site_address(url):
     address = address[0]
     return address
 
-def print_product_info(title, price, image):
-    print("Product: " + title + "\nPrice: " + price + "\nImageURL: " + image)
+
+def print_product_info(title, price, currency, image):
+    print("Product: " + title + "\nPrice(" + currency + "):", price, "\nImageURL: " + image)
 
 
 def get_info(url):
+
+
 
     html_content = requests.get(url).text
     soup = BeautifulSoup(html_content, "html.parser")
@@ -189,138 +205,207 @@ def get_info(url):
         print("Emag:")
         title = find_title(soup, "h1", "page-title")
         price = find_price_emag(soup, "p", "product-new-price")
+        price = re.sub("Lei", '', price)
+        price = re.sub(",", ".", price)
+        price = float(price)
+        currency = "LEI"
         image = soup.find("div", attrs={"class": "ph-body"}).img['data-src'].strip()
-        print_product_info(title, price, image)
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
     if address == "mediagalaxy.ro":
         print("Mediagalaxy:")
         title = find_title(soup, "h1", "font-bold leading-none text-black m-0 text-center text-base lg:text-3xl bg-gray-lighter lg:bg-transparent -mx-15px lg:mx-auto px-3 pt-4 pb-3 lg:p-0 border-b lg:border-b-0")
         price = find_price(soup, "div", "Price-current")
+        price = re.sub("\.", '', price)
+        price = re.sub(",", ".", price)
+        price = re.sub("lei", '', price)
+        price = float(price)
+        currency = ron
         image = soup.find("div", attrs={"class": "slick-slide slick-active slick-current"}).img['src'].strip()
-        print_product_info(title, price, image)
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
     if address == "flanco.ro":
         print("Flanco:")
         title = soup.find("h1", attrs={"id": "product-title"}).text.strip()
         price = find_price(soup, "div", "produs-price")
+        price = re.sub("\.", '', price)
+        price = re.sub(",", ".", price)
+        price = re.sub("lei", '', price)
+        price = float(price)
+        currency = ron
         image = soup.find("img", attrs={"class": "product-main-image-img desktop"})['data-lazy']
-        print_product_info(title, price, image)
-
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
     if address == "cel.ro":
         print("Cel:")
         title = find_title(soup, "h1", "productName")
-        price = find_price(soup, "span", "productPrice") + " Lei"
+        price = find_price(soup, "span", "productPrice")
+        price = float(price)
+        currency = ron
         image = soup.find("img", attrs={"id": "main-product-image"})['src'].strip()
-        print_product_info(title, price, image)
-
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
     if address == "dedeman.ro":
         print("Dedeman:")
         title = find_title(soup, "h1", "no-margin-bottom product-title")
-        price = soup.find("div", attrs={"class": "product-price large"}).span.text.strip() + " Lei"
+        price = soup.find("div", attrs={"class": "product-price large"}).span.text.strip()
+        price = float(price)
+        currency = ron
         image = soup.find("img", attrs={"class": "slider-product-image img-responsive"})['src'].strip()
-        print_product_info(title, price, image)
-
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
     if address == "autovit.ro":
         print("Autovit:")
         title = find_title(soup, "span", "offer-title big-text fake-title")
         price = find_price(soup, "span", "offer-price__number")
+        price = re.sub("EUR", '', price)
+        price = re.sub(" ", '', price)
+        price = float(price)
+        currency = euro
         image = soup.find("div", attrs={"class": "photo-item"}).img['data-lazy'].strip()
-        print_product_info(title, price, image)
-
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
     if address == "altex.ro":
         print("Altex:")
         title = find_title(soup, "h1", "font-bold leading-none text-black m-0 text-center text-base lg:text-3xl bg-gray-lighter lg:bg-transparent -mx-15px lg:mx-auto px-3 pt-4 pb-3 lg:p-0 border-b lg:border-b-0")
         price = find_price(soup, "div", "Price-current")
+        price = re.sub("\.", '', price)
+        price = re.sub(",", ".", price)
+        price = re.sub("lei", '', price)
+        price = float(price)
+        currency = ron
         image = soup.find("div", attrs={"class": "slick-slide slick-active slick-current"}).img['src'].strip()
-        print_product_info(title, price, image)
-
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
     if address == "evomag.ro":
         print("Evomag:")
         title = find_title(soup, "h1", "product_name")
         price = find_price(soup, "div", "pret_rons")
+        price = re.sub("\.", '', price)
+        price = re.sub(",", ".", price)
+        price = re.sub("Lei", '', price)
+        price = float(price)
+        currency = ron
         image = soup.find("a", attrs={"class": "fancybox fancybox.iframe"}).img['src'].strip()
-        print_product_info(title, price, image)
-
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
     if address == "quickmobile.ro":
         print("QuickMobile:")
         title = find_title(soup, "div", "product-page-title page-product-title-wth")
         price = find_price(soup, "div", "priceFormat total-price price-fav product-page-price")
+        price = re.sub("Lei", '', price)
+        price = float(price)
+        currency = ron
         image = soup.find("img", attrs={"class": "img-responsive image-gallery"})['src'].strip()
-        print_product_info(title, price, image)
-
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
     if address == "gymbeam.ro":
         print("GymBeam:")
         title = find_title(soup, "h1", "page-title")
         price = find_price(soup, "span", "price")
+        price = re.sub(",", '.', price)
+        price = re.sub("Lei", '', price)
+        price = float(price)
+        currency = ron
         image = soup.find("div", attrs={"class": "product media"}).img['data-src'].strip()
-        print_product_info(title, price, image)
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
-    # !!!!! Resolve exception when advert is no longer active !!!!
-    if address == "olx.ro":
-        print("OLX:")
-        title = soup.find("div", attrs={"class": "offer-titlebox"}).h1.text.strip()
-        price = find_price(soup, "div", "price-label")
-        image = soup.find("img", attrs={"class": "vtop bigImage {nr:1}"})['src'].strip()
-        print_product_info(title, price, image)
-
+    # # !!!!! Resolve exception when advert is no longer active !!!!
+    # if address == "olx.ro":
+    #     print("OLX:")
+    #     title = soup.find("div", attrs={"class": "offer-titlebox"}).h1.text.strip()
+    #     price = find_price(soup, "div", "price-label")
+    #     currency = ron
+    #     image = soup.find("img", attrs={"class": "vtop bigImage {nr:1}"})['src'].strip()
+    #     print_product_info(title, price, currency, image)
 
     if address == "megaproteine.ro":
         print("MegaProteine:")
         title = soup.find("h1").text.strip()
         price = find_price(soup, "span", "pret")
+        price = re.sub(",", '.', price)
+        price = re.sub("lei", '', price)
+        price = float(price)
+        currency = ron
         image = soup.find("link", attrs={"rel": "image_src"})['href'].strip()
-        print_product_info(title, price, image)
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
     if address == "sportisimo.ro":
         print("Sportisimo:")
         title = soup.find("h1").text.strip()
         price = soup.find("p", attrs={"class": "price"}).text.strip()
-        price = re.sub("cu TVA", '', price)
-        image = soup.find("a", attrs={"id": "product_slider_p226188_slide_0_link"}).img['src'].strip()
-        print_product_info(title, price, image)
-
+        price = re.sub("Lei cu TVA", '', price)
+        # price = re.sub(" ", '%', price)
+        price = re.sub(",", ".", price)
+        price = price.replace(u'\xa0', u'')
+        price = re.findall(r'[0-9]*\.[0-9]*', price)
+        price = float(price[0])
+        currency = ron
+        image = soup.find("div", attrs={"class": "gallery_image slide"}).img['src'].strip()
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
     if address == "footshop.eu":
         print("Footshop:")
         title = soup.find("h1").text.strip()
         price = soup.find("p", attrs={"class": "ProductProperties_price_1rMbi"}).text.strip()
         price = re.sub("cu TVA", '', price)
+        price = re.sub("Lei", '', price)
+        price = float(price)
+        currency = ron
+        image = "no image"
         # image = soup.find("img", attrs={"class": "ImageSlider_image_2Vl4h"}).text.strip()
-        print_product_info(title, price, "no image")
-
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
     if address == "marso.ro":
         print("Marso:")
         title = soup.find("title").text.strip()
         price = find_price(soup, "div", "retail-price-brutto")
+        price = re.sub("LEI", '', price)
+        price = re.sub(",", '.', price)
+        price = float(price)
+        currency = ron
         image = soup.find("img", attrs={"class": "product-image ui centered middle aligned image"})['src'].strip()
-        print_product_info(title, price, image)
-
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
     if address == "intersport.ro":
         print("Intersport")
         title = soup.find("title").text.strip()
         price = find_price(soup, "span", "price")
+        price = re.sub("LEI", '', price)
+        price = re.sub(",", '.', price)
+        price = float(price)
+        currency = ron
         image = soup.find("div", attrs={"class": "image-container"}).img['src'].strip()
-        print_product_info(title, price, image)
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
     # !!!!! Resolve exception when advert is no longer active !!!!
     if address == "ebay.com":
         print("Ebay:")
         title = soup.find("title").text.strip()
         price = soup.find("span", attrs={"id": "prcIsum"}).text.strip()
+        price = re.sub("US",'', price)
+        price = re.sub("\$",'', price)
+        price = float(price)
+        currency = dollar
         image = soup.find("img", attrs={"id": "icImg"})['src'].strip()
-        print_product_info(title, price, image)
+        print_product_info(title, price, currency, image)
+        return title, price, currency, image
 
-
-        # ebay: tag = "span" | class = "notranslate"
 
 #################################################################################################
 
@@ -334,29 +419,34 @@ def get_info(url):
 # get_info(evomag_url)
 # get_info(quickmobile_url)
 # get_info(gymbeam_url)
-# get_info(olx_url)
 # get_info(megaproteine_url)
 # get_info(sportisimo_url)
-
-# get_info(footshop_url)
-
 # get_info(marso_url)
 # get_info(intersport_url)
+# get_info(ebay_url)
+#
+# get_info(olx_url)
+# get_info(footshop_url)
 
 
-get_info(ebay_url)
-#
-#
+
+
 # TEST BENCH ######################
 
+def info(url):
+    html_content = requests.get(url).text
+    soup = BeautifulSoup(html_content, "html.parser")
+    image = soup.find("div", attrs={"class": "slick-slide slick-active slick-current"})
+    print(image)
 
-# html_content = requests.get(footshop_url).text
-# soup = BeautifulSoup(html_content, "html.parser")
-# image = soup.find("div", attrs={"class": "slick-slide slick-active slick-current"})
-# print(image)
-#
-#
+
+
+
+
+
 # urllib.request.urlretrieve(image, "000000001.jpg")
+
+
 # TEST BENCH ######################
 
 
@@ -364,23 +454,33 @@ get_info(ebay_url)
 
 #################################################################################################
 
-# price = find_price(ebay_url, "span", "notranslate")
-# get_site_address(mediagalaxy_url)
-# print(price)
-#
-# firebase = firebase.FirebaseApplication("https://price-tracker-7cfd7.firebaseio.com/", None)
-# data = {
-#     'Name': "Adidas",
-#     'Price': price,
-#     'Date': date
-# }
-#
-# result = firebase.post('price-tracker-7cfd7/Pistike', data)
+# Getting an Setting product information
+category = clothing
+product_data = get_info(ebay_url)
+title = product_data[0]
+price = product_data[1]
+currency = product_data[2]
+image = product_data[3]
+
+# Creating json object for firebase
+firebase = firebase.FirebaseApplication("https://price-tracker-7cfd7.firebaseio.com/", None)
+data = {
+    'Category': category,
+    'Name': title,
+    'Price': price,
+    'Currency': currency,
+    'Image': image
+}
+
+# Uploading data
+result = firebase.post('price-tracker-7cfd7/Pistike', data)
+print(result)
+
+
 # result = firebase.post('price-tracker-7cfd7/Pistike', data)
 # result = firebase.post('price-tracker-7cfd7/Pistike', data)
 # result2 = firebase.post('price-tracker-7cfd7/John Connor', data)
 # result2 = firebase.post('price-tracker-7cfd7/John Connor', data)
-# print(result)
 # print(result2)
 
 #################################################################################################
