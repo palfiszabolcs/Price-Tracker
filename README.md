@@ -1,4 +1,4 @@
-This Android app automatically tracks curent prices on a given url.
+This Android app automatically tracks current prices on a given URL.
 
 Currently Supported Websites:
 Romanian: 
@@ -12,15 +12,12 @@ Romanian:
 - evomag.ro
 - quickmobile.ro
 - gymbeam.ro
-- olx.ro
 - megaproteine.ro
 - sportisimo.ro
 - footshop.ro
 - marso.ro
 - hervis.ro
 - intersport.ro
-- ro.sportsdirect.com
 
 International:
-
 - ebay.com
