@@ -1,11 +1,52 @@
+import json
+
 import requests
 from bs4 import BeautifulSoup
 import re
+from datetime import date
+from dataclasses import dataclass
+from dataclasses_json import dataclass_json
+from dacite import from_dict
+from firebase import firebase
+from datetime import date
 
 # TODO: Clean up code!
-# TODO: Access data from firebase!
+# TODO: Make checks and append to already existing products
 
 #################################################################################################
+
+# ################## Beginning of Classes ###################
+@dataclass
+class FireBaseResponse:
+    name: str
+
+
+@dataclass
+class Check:
+    price: float
+    date: date
+
+
+@dataclass
+class UtilProduct:
+    category: str
+    check: dict
+    currency: str
+    image: str
+    name: str
+    url: str
+
+
+@dataclass
+class Product:
+    product_id: str
+    product_data: UtilProduct
+
+
+# ################## End of Classes ###################
+
+# ################## Beginning of Other ###################
+
 # Currencies
 currency_ron = "RON"
 currency_euro = "EUR"
@@ -14,9 +55,13 @@ currency_dollar = "USD"
 # Categories
 category_electronics = "Electronics"
 category_vehicles = "Vehicles"
-category_clothing = "Clothig"
+category_clothing = "Clothing"
 category_sports = "Sports"
 category_other = "Other"
+
+# ################## End of Other ###################
+
+# ################## Beginning of URLs ###################
 
 url_emag = "https://www.emag.ro/bratara-fitness-xiaomi-mi-band-4-6934177710377/pd/DVG5SRBBM"
 url_mediagalaxy = "https://mediagalaxy.ro/laptop-hp-pavilion-15-cs1005nq-intel-core-i7-8565u-" \
@@ -44,8 +89,13 @@ url_ebay = "https://www.ebay.com/itm/Adidas-Ultraboost-J-Athletic-Running-Shoes-
            "3D2%26rkt%3D12%26sd%3D163920485799%26itm%3D123975539042%26pmt%3D1%26" \
            "noa%3D0%26pg%3D2047675&_trksid=p2047675.c100012.m1985"
 
+# ################## End of URLs ###################
 
 #################################################################################################
+
+
+# ################## Beginning of Utility Functions ###################
+# Used for making main functions more readable
 
 def find_price(soup, tag, class_name):
     price = soup.find(tag, attrs={"class": class_name}).text.strip()
@@ -68,7 +118,41 @@ def print_product_info(title, price, currency, image):
     print("Product: " + title + "\nPrice(" + currency + "):", price, "\nImageURL: " + image)
 
 
-def get_info(url):
+# returns a the data of a product(id)
+def get_product_data(user, product):
+    from firebase import firebase
+    firebase = firebase.FirebaseApplication("https://price-tracker-7cfd7.firebaseio.com/", None)
+    dict_data = firebase.get("users/" + user + "/" + product, None)
+    return dict_data
+
+
+# returns a list of id-s
+def get_user_products(user):
+    from firebase import firebase
+    firebase = firebase.FirebaseApplication("https://price-tracker-7cfd7.firebaseio.com/", None)
+    dict_data = firebase.get("users/" + user, None)
+    return dict_data
+
+
+def get_users():
+    from firebase import firebase
+    firebase = firebase.FirebaseApplication("https://price-tracker-7cfd7.firebaseio.com/", None)
+    result = firebase.get("users", None)
+    users_list = []
+    for user in result:
+        users_list.append(user)
+    return users_list
+
+
+def pretty_print_dict(data):
+    print(json.dumps(data, indent=4, sort_keys=True))
+
+
+# ################## End of Utility Functions ###################
+
+# ################## Beginning of Main Functions ###################
+
+def get_url_info(url):
     html_content = requests.get(url).text
     soup = BeautifulSoup(html_content, "html.parser")
     address = get_site_address(url)
@@ -85,7 +169,7 @@ def get_info(url):
         price = float(price)
         currency = "LEI"
         image = soup.find("div", attrs={"class": "ph-body"}).img['data-src'].strip()
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
     if address == "mediagalaxy.ro":
@@ -101,7 +185,7 @@ def get_info(url):
         price = float(price)
         currency = currency_ron
         image = soup.find("div", attrs={"class": "slick-slide slick-active slick-current"}).img['src'].strip()
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
     if address == "flanco.ro":
@@ -114,7 +198,7 @@ def get_info(url):
         price = float(price)
         currency = currency_ron
         image = soup.find("img", attrs={"class": "product-main-image-img desktop"})['data-lazy']
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
     if address == "cel.ro":
@@ -124,7 +208,7 @@ def get_info(url):
         price = float(price)
         currency = currency_ron
         image = soup.find("img", attrs={"id": "main-product-image"})['src'].strip()
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
     if address == "dedeman.ro":
@@ -134,7 +218,7 @@ def get_info(url):
         price = float(price)
         currency = currency_ron
         image = soup.find("img", attrs={"class": "slider-product-image img-responsive"})['src'].strip()
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
     if address == "autovit.ro":
@@ -146,7 +230,7 @@ def get_info(url):
         price = float(price)
         currency = currency_euro
         image = soup.find("div", attrs={"class": "photo-item"}).img['data-lazy'].strip()
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
     if address == "altex.ro":
@@ -159,7 +243,7 @@ def get_info(url):
         price = float(price)
         currency = currency_ron
         image = soup.find("div", attrs={"class": "slick-slide slick-active slick-current"}).img['src'].strip()
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
     if address == "evomag.ro":
@@ -172,7 +256,7 @@ def get_info(url):
         price = float(price)
         currency = currency_ron
         image = soup.find("a", attrs={"class": "fancybox fancybox.iframe"}).img['src'].strip()
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
     if address == "quickmobile.ro":
@@ -183,7 +267,7 @@ def get_info(url):
         price = float(price)
         currency = currency_ron
         image = soup.find("img", attrs={"class": "img-responsive image-gallery"})['src'].strip()
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
     if address == "gymbeam.ro":
@@ -195,7 +279,7 @@ def get_info(url):
         price = float(price)
         currency = currency_ron
         image = soup.find("div", attrs={"class": "product media"}).img['data-src'].strip()
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
     if address == "megaproteine.ro":
@@ -207,7 +291,7 @@ def get_info(url):
         price = float(price)
         currency = currency_ron
         image = soup.find("link", attrs={"rel": "image_src"})['href'].strip()
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
     if address == "sportisimo.ro":
@@ -222,7 +306,7 @@ def get_info(url):
         price = float(price[0])
         currency = currency_ron
         image = soup.find("div", attrs={"class": "gallery_image slide"}).img['src'].strip()
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
     if address == "footshop.eu":
@@ -235,7 +319,7 @@ def get_info(url):
         currency = currency_ron
         image = "no image"
         # image = soup.find("img", attrs={"class": "ImageSlider_image_2Vl4h"}).text.strip()
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
     if address == "marso.ro":
@@ -247,7 +331,7 @@ def get_info(url):
         price = float(price)
         currency = currency_ron
         image = soup.find("img", attrs={"class": "product-image ui centered middle aligned image"})['src'].strip()
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
     if address == "intersport.ro":
@@ -259,7 +343,7 @@ def get_info(url):
         price = float(price)
         currency = currency_ron
         image = soup.find("div", attrs={"class": "image-container"}).img['src'].strip()
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
     # !!!!! Resolve exception when advert is no longer active !!!!
@@ -272,15 +356,15 @@ def get_info(url):
         price = float(price)
         currency = currency_dollar
         image = soup.find("img", attrs={"id": "icImg"})['src'].strip()
-        print_product_info(title, price, currency, image)
+        # print_product_info(title, price, currency, image)
         return title, price, currency, image
 
 
-def push_data(user, url, prod_category):
+def push_data_to_db(user, url, prod_category):
     from firebase import firebase
     from datetime import date
 
-    product_data = get_info(url)
+    product_data = get_url_info(url)
     title = product_data[0]
     price = product_data[1]
     currency = product_data[2]
@@ -288,55 +372,92 @@ def push_data(user, url, prod_category):
     cur_date = date.today()
 
     firebase = firebase.FirebaseApplication("https://price-tracker-7cfd7.firebaseio.com/", None)
-    check = [(price, cur_date)]
-    data = {
-        'URL': url,
-        'Category': prod_category,
-        'Name': title,
-        'Currency': currency,
-        'Image': image,
-        'Checks': check
+
+    product_data = {
+        'url': url,
+        'category': prod_category,
+        'name': title,
+        'currency': currency,
+        'image': image,
     }
-    res = firebase.post("Users/" + user, data)
-    return res
+
+    response = firebase.post("users/" + user, product_data)
+    prod_id = from_dict(FireBaseResponse, response).name
+
+    check_data = {
+        'price': price,
+        'date': cur_date
+    }
+    response_check = firebase.post("users/" + user + "/" + prod_id + "/check", check_data)
+
+    return prod_id
+
+
+# returns a list of Products
+def make_product_list(user):
+    dict_data = get_user_products(user)
+    users_product_list = []
+    for prod in dict_data:
+        product_data = get_product_data(term, prod)
+        data = from_dict(data_class=UtilProduct, data=product_data)
+        final_product = Product(prod, data)
+        users_product_list.append(final_product)
+
+    return users_product_list
+
+
+# ################## End of Main Functions ###################
 
 
 # ############################################ - TEST BENCH - ####################################################
+def test_push():
+    # 1.1
+    url = url_mediagalaxy
+    category = category_electronics
+    result = push_data_to_db("Terminator T1000", url, category)
+    print(result)
 
-# 1.1
-url = url_mediagalaxy
-category = category_electronics
-result = push_data("Termiantor T1000", url, category)
-print(result)
+    # 1.2
+    url = url_cel
+    category = category_electronics
+    result = push_data_to_db("Terminator T1000", url, category)
+    print(result)
 
-# 1.2
-url = url_cel
-category = category_electronics
-result = push_data("Termiantor T1000", url, category)
-print(result)
+    # 1.3
+    url = url_autovit
+    category = category_vehicles
+    result = push_data_to_db("Terminator T1000", url, category)
+    print(result)
 
-# 1.3
-url = url_autovit
-category = category_vehicles
-result = push_data("Termiantor T1000", url, category)
-print(result)
+    # 2.1
+    url = url_marso
+    category = category_vehicles
+    result = push_data_to_db("Valaki mas", url, category)
+    print(result)
 
-# 2.1
-url = url_marso
-category = category_vehicles
-result = push_data("Valaki mas", url, category)
-print(result)
+    # 2.2
+    url = url_marso
+    category = category_vehicles
+    result = push_data_to_db("Valaki mas", url, category)
+    print(result)
 
-# 2.2
-url = url_marso
-category = category_vehicles
-result = push_data("Valaki mas", url, category)
-print(result)
+    # 3.1
+    url = url_footshop
+    category = category_clothing
+    result = push_data_to_db("En", url, category)
+    print(result)
 
-# 3.1
-url = url_footshop
-category = category_clothing
-result = push_data("En", url, category)
-print(result)
+# Users for testing purposes
+term = "Terminator T1000"
+en = "En"
+valaki = "Valaki mas"
+
+# test_push()
+
+
+prod_list = make_product_list(term)
+for item in prod_list:
+    print(item)
+
 
 # ############################################ - TEST BENCH - ####################################################
