@@ -1,472 +1,179 @@
-import json
-
 import requests
 from bs4 import BeautifulSoup
-import re
-from datetime import date
-from dataclasses import dataclass
-from dataclasses_json import dataclass_json
 from dacite import from_dict
-from firebase import firebase
+from firebase import firebase as fb
 from datetime import date
 
-# TODO: Clean up code!
-# TODO: figure out how to get stuff from the android app
+import Classes.class_FirebaseResponse
+from Util import test_urls as test_url, database, constants as constant, util_functions as util, category as cat
 
-
-# ################## - Beginning of Classes - ###################
-@dataclass
-class FireBaseResponse:
-    name: str
-
-
-@dataclass
-class Check:
-    price: float
-    date: date
-
-
-@dataclass
-class UtilProduct:
-    category: str
-    check: dict
-    currency: str
-    image: str
-    name: str
-    url: str
-
-
-@dataclass
-class Product:
-    product_id: str
-    product_data: UtilProduct
-
-
-# ################## - End of Classes - ###################
-
-# ################## - Beginning of Other - ###################
-
-# Currencies
-currency_ron = "RON"
-currency_euro = "EUR"
-currency_dollar = "USD"
-
-# Categories
-category_electronics = "Electronics"
-category_vehicles = "Vehicles"
-category_clothing = "Clothing"
-category_sports = "Sports"
-category_other = "Other"
-
-# ################## - End of Other - ###################
-
-# ################## - Beginning of URLs - ###################
-
-url_emag = "https://www.emag.ro/bratara-fitness-xiaomi-mi-band-4-6934177710377/pd/DVG5SRBBM"
-url_mediagalaxy = "https://mediagalaxy.ro/laptop-hp-pavilion-15-cs1005nq-intel-core-i7-8565u-" \
-                  "pana-la-4-6ghz-15-6-full-hd-8gb-ssd-256gb-nvidia-geforce-mx150-2gb-free-dos-argintiu/cpd/LAP6PT41EA/"
-url_flanco = "https://www.flanco.ro/apple-watch-series-5-gps-44mm-space-grey-aluminium-case-black-sport-band.html"
-url_cel = "https://www.cel.ro/telefoane-mobile/telefon-mobil-apple-iphone-7-32gb-black-pMiYwMDMm-l"
-url_dedeman = "https://www.dedeman.ro/ro/lance-pentru-k2-k3-karcher-vp120-2-642-724-0/p/1019260"
-url_autovit = "https://www.autovit.ro/anunt/bmw-seria-1-120-ID7Gyoh2.html#74b248046e"
-url_altex = "https://altex.ro/boxe-audio-5-0-jamo-s-628-hcs-negru/cpd/BOXS628HCSBA/"
-url_evomag = "https://www.evomag.ro/resigilate-produse-resigilate/" \
-             "samsung-televizor-led-samsung-125-cm-49-ue49mu8002-ultra-hd-4k-smart-tv-wifi-ci-3620864.html"
-url_quickmobile = "https://www.quickmobile.ro/entertainment/" \
-                  "boxe-portabile/harman-kardon-boxa-portabila-onyx-studio-6-albastru-206775"
-url_gymbeam = "https://gymbeam.ro/kreatin-crea7in-300-g-gymbeam.html"
-url_megaproteine = "https://www.megaproteine.ro/Accesorii/" \
-                   "Manusi-antrenament-sala-pentru-barbati-Adidas-Essential-Gloves-Black-Grey/"
-url_sportisimo = "https://www.sportisimo.ro/under-armour/cg-armour-mock/226188/"
-url_footshop = "https://www.footshop.eu/ro/incaltaminte-pentru-el/24388-reebok-club-c-85-white-green.html"
-url_marso = "https://www.marso.ro/produs/anvelopa/nokian/turisme/anvelopa-de-iarna/wr-d3/195-65-r15/35860"
-url_intersport = "https://www.intersport.ro/pd/" \
-                 "converse-pantofi-ct-as164882c-164882c-248833.htm?lang=ro&path=-760105428&color=2995"
-url_ebay = "https://www.ebay.com/itm/Adidas-Ultraboost-J-Athletic-Running-Shoes-Trace-Blue-DB1427-NEW-Youth-4-5Y/" \
-           "123975539042?_trkparms=aid%3D555018%26algo%3DPL.SIM%26ao%3D1%26asc%3D20190212102350%26meid%3Dca8e6a32430c" \
-           "4c048e634c8ea5071844%26pid%3D100012%26rk%" \
-           "3D2%26rkt%3D12%26sd%3D163920485799%26itm%3D123975539042%26pmt%3D1%26" \
-           "noa%3D0%26pg%3D2047675&_trksid=p2047675.c100012.m1985"
-
-# ################## - End of URLs - ###################
-
-
-# ################## - Beginning of Utility Functions - ###################
-# Used for making main functions more readable
-
-def find_price(soup, tag, class_name):
-    price = soup.find(tag, attrs={"class": class_name}).text.strip()
-    return price
-
-
-def find_title(soup, tag, class_name):
-    title = soup.find(tag, attrs={"class": class_name}).text.strip()
-    return title
-
-
-def get_site_address(url):
-    pattern = r'[a-zA-z]+\.ro+|[a-zA-z]+\.com+|[a-zA-z]+\.eu+'
-    address = re.findall(pattern, url)
-    address = address[0]
-    return address
-
-
-def print_product_info(title, price, currency, image):
-    print("Product: " + title + "\nPrice(" + currency + "):", price, "\nImageURL: " + image)
-
-
-# returns a the data of a product(id)
-def get_product_data(user, product):
-    from firebase import firebase
-    firebase = firebase.FirebaseApplication("https://price-tracker-7cfd7.firebaseio.com/", None)
-    dict_data = firebase.get("users/" + user + "/" + product, None)
-    return dict_data
-
-
-# returns a list of id-s
-def get_user_products(user):
-    from firebase import firebase
-    firebase = firebase.FirebaseApplication("https://price-tracker-7cfd7.firebaseio.com/", None)
-    dict_data = firebase.get("users/" + user, None)
-    return dict_data
-
-
-def get_users():
-    from firebase import firebase
-    firebase = firebase.FirebaseApplication("https://price-tracker-7cfd7.firebaseio.com/", None)
-    result = firebase.get("users", None)
-    users_list = []
-    for user in result:
-        users_list.append(user)
-    return users_list
-
-
-def pretty_print_dict(data):
-    print(json.dumps(data, indent=4, sort_keys=True))
-
-
-def upload_check_data(user, product_id, price, cur_date):
-    from firebase import firebase
-
-    firebase = firebase.FirebaseApplication("https://price-tracker-7cfd7.firebaseio.com/", None)
-
-    check_data = {
-        'price': price,
-        'date': cur_date
-    }
-
-    response = firebase.post("users/" + user + "/" + product_id + "/check", check_data)
-    return response
-
-# ################## - End of Utility Functions - ###################
-
-# ################## - Beginning of Main Functions - ###################
 
 def get_url_info(url):
+    print("Getting information from URL...")
     html_content = requests.get(url).text
     soup = BeautifulSoup(html_content, "html.parser")
-    address = get_site_address(url)
+    address = util.get_site_address(url)
 
     if address == "emag.ro":
-        title = find_title(soup, "h1", "page-title")
-        price = soup.find("p", attrs={"class": "product-new-price"}).text.strip()
-        s = list(price)
-        s.insert(-6, ",")
-        price = "".join(s)
-        price = re.sub("Lei", '', price)
-        price = re.sub(",", ".", price)
-        price = float(price)
-        currency = "LEI"
-        image = soup.find("div", attrs={"class": "ph-body"}).img['data-src'].strip()
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_emag(soup)
 
     if address == "mediagalaxy.ro":
-        title = find_title(soup, "h1", "font-bold leading-none text-black m-0"
-                                       " text-center text-base lg:text-3xl bg-gray-lighter "
-                                       "lg:bg-transparent -mx-15px lg:mx-auto px-3"
-                                       " pt-4 pb-3 lg:p-0 border-b lg:border-b-0")
-        price = find_price(soup, "div", "Price-current")
-        price = re.sub("\.", '', price)
-        price = re.sub(",", ".", price)
-        price = re.sub("lei", '', price)
-        price = float(price)
-        currency = currency_ron
-        image = soup.find("div", attrs={"class": "slick-slide slick-active slick-current"}).img['src'].strip()
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_mediagalaxy(soup)
 
     if address == "flanco.ro":
-        title = soup.find("h1", attrs={"id": "product-title"}).text.strip()
-        price = find_price(soup, "div", "produs-price")
-        price = re.sub("\.", '', price)
-        price = re.sub(",", ".", price)
-        price = re.sub("lei", '', price)
-        price = float(price)
-        currency = currency_ron
-        image = soup.find("img", attrs={"class": "product-main-image-img desktop"})['data-lazy']
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_flanco(soup)
 
     if address == "cel.ro":
-        title = find_title(soup, "h1", "productName")
-        price = find_price(soup, "span", "productPrice")
-        price = float(price)
-        currency = currency_ron
-        image = soup.find("img", attrs={"id": "main-product-image"})['src'].strip()
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_cel(soup)
 
     if address == "dedeman.ro":
-        title = find_title(soup, "h1", "no-margin-bottom product-title")
-        price = soup.find("div", attrs={"class": "product-price large"}).span.text.strip()
-        price = float(price)
-        currency = currency_ron
-        image = soup.find("img", attrs={"class": "slider-product-image img-responsive"})['src'].strip()
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_dedeman(soup)
 
     if address == "autovit.ro":
-        title = find_title(soup, "span", "offer-title big-text fake-title")
-        price = find_price(soup, "span", "offer-price__number")
-        price = re.sub("EUR", '', price)
-        price = re.sub(" ", '', price)
-        price = float(price)
-        currency = currency_euro
-        image = soup.find("div", attrs={"class": "photo-item"}).img['data-lazy'].strip()
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_autovit(soup)
 
     if address == "altex.ro":
-        title = find_title(soup, "h1", "font-bold leading-none text-black m-0 text-center text-base lg:text-3xl bg-gray-lighter lg:bg-transparent -mx-15px lg:mx-auto px-3 pt-4 pb-3 lg:p-0 border-b lg:border-b-0")
-        price = find_price(soup, "div", "Price-current")
-        price = re.sub("\.", '', price)
-        price = re.sub(",", ".", price)
-        price = re.sub("lei", '', price)
-        price = float(price)
-        currency = currency_ron
-        image = soup.find("div", attrs={"class": "slick-slide slick-active slick-current"}).img['src'].strip()
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_altex(soup)
 
     if address == "evomag.ro":
-        title = find_title(soup, "h1", "product_name")
-        price = find_price(soup, "div", "pret_rons")
-        price = re.sub("\.", '', price)
-        price = re.sub(",", ".", price)
-        price = re.sub("Lei", '', price)
-        price = float(price)
-        currency = currency_ron
-        image = soup.find("a", attrs={"class": "fancybox fancybox.iframe"}).img['src'].strip()
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_evomag(soup)
 
     if address == "quickmobile.ro":
-        title = find_title(soup, "div", "product-page-title page-product-title-wth")
-        price = find_price(soup, "div", "priceFormat total-price price-fav product-page-price")
-        price = re.sub("Lei", '', price)
-        price = float(price)
-        currency = currency_ron
-        image = soup.find("img", attrs={"class": "img-responsive image-gallery"})['src'].strip()
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_quickmobile(soup)
 
     if address == "gymbeam.ro":
-        title = find_title(soup, "h1", "page-title")
-        price = find_price(soup, "span", "price")
-        price = re.sub(",", '.', price)
-        price = re.sub("Lei", '', price)
-        price = float(price)
-        currency = currency_ron
-        image = soup.find("div", attrs={"class": "product media"}).img['data-src'].strip()
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_gymbeam(soup)
 
     if address == "megaproteine.ro":
-        title = soup.find("h1").text.strip()
-        price = find_price(soup, "span", "pret")
-        price = re.sub(",", '.', price)
-        price = re.sub("lei", '', price)
-        price = float(price)
-        currency = currency_ron
-        image = soup.find("link", attrs={"rel": "image_src"})['href'].strip()
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_megaproteine(soup)
 
     if address == "sportisimo.ro":
-        title = soup.find("h1").text.strip()
-        price = soup.find("p", attrs={"class": "price"}).text.strip()
-        price = re.sub("Lei cu TVA", '', price)
-        # price = re.sub(" ", '%', price)
-        price = re.sub(",", ".", price)
-        price = price.replace(u'\xa0', u'')
-        price = re.findall(r'[0-9]*\.[0-9]*', price)
-        price = float(price[0])
-        currency = currency_ron
-        image = soup.find("div", attrs={"class": "gallery_image slide"}).img['src'].strip()
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_sportisimo(soup)
 
     if address == "footshop.eu":
-        title = soup.find("h1").text.strip()
-        price = soup.find("p", attrs={"class": "ProductProperties_price_1rMbi"}).text.strip()
-        price = re.sub("cu TVA", '', price)
-        price = re.sub("Lei", '', price)
-        price = float(price)
-        currency = currency_ron
-        image = "no image"
-        # image = soup.find("img", attrs={"class": "ImageSlider_image_2Vl4h"}).text.strip()
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_footshop(soup)
 
     if address == "marso.ro":
-        title = soup.find("title").text.strip()
-        price = find_price(soup, "div", "retail-price-brutto")
-        price = re.sub("LEI", '', price)
-        price = re.sub(",", '.', price)
-        price = float(price)
-        currency = currency_ron
-        image = soup.find("img", attrs={"class": "product-image ui centered middle aligned image"})['src'].strip()
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_marso(soup)
 
     if address == "intersport.ro":
-        title = soup.find("title").text.strip()
-        price = find_price(soup, "span", "price")
-        price = re.sub("LEI", '', price)
-        price = re.sub(",", '.', price)
-        price = float(price)
-        currency = currency_ron
-        image = soup.find("div", attrs={"class": "image-container"}).img['src'].strip()
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_intersport(soup)
 
     # !!!!! Resolve exception when advert is no longer active !!!!
     if address == "ebay.com":
-        title = soup.find("title").text.strip()
-        price = soup.find("span", attrs={"id": "prcIsum"}).text.strip()
-        price = re.sub("US",'', price)
-        price = re.sub("\$",'', price)
-        price = float(price)
-        currency = currency_dollar
-        image = soup.find("img", attrs={"id": "icImg"})['src'].strip()
-        # print_product_info(title, price, currency, image)
-        return title, price, currency, image
+        return util.get_and_parse_ebay(soup)
 
 
 def push_new_data_to_db(user, url, prod_category):
-    from firebase import firebase
-    from datetime import date
+    print("Pushing to database...")
+    data = get_url_info(url)
 
-    product_data = get_url_info(url)
-    title = product_data[0]
-    price = product_data[1]
-    currency = product_data[2]
-    image = product_data[3]
-    cur_date = date.today()
-
-    firebase = firebase.FirebaseApplication("https://price-tracker-7cfd7.firebaseio.com/", None)
+    firebase = fb.FirebaseApplication(database.firebase_link, None)
 
     product_data = {
         'url': url,
         'category': prod_category,
-        'name': title,
-        'currency': currency,
-        'image': image,
+        'name': data.title,
+        'currency': data.currency,
+        'image': data.image,
     }
 
-    response = firebase.post("users/" + user, product_data)
-    prod_id = from_dict(FireBaseResponse, response).name
+    response = firebase.post("USERS/" + user, product_data)
+    prod_id = from_dict(Classes.class_FirebaseResponse, response).name
 
     check_data = {
-        'price': price,
-        'date': cur_date
+        'price': data.price,
+        'date': date.today()
     }
-    response_check = firebase.post("users/" + user + "/" + prod_id + "/check", check_data)
+    response_check = firebase.post("USERS/" + user + "/" + prod_id + "/check", check_data)
 
     return prod_id
 
 
-# updates every price in the db
+# goes over all new users or existing users who added new products and ads them to the main USERS folder
+def update_users():
+    users_list = util.get_new_users()
+    print("Updating users...")
+    for user in users_list:
+        users_product_list = util.make_new_product_list(user)
+        for item in users_product_list:
+            push_new_data_to_db(user, item.product.url, item.product.category)
+
+
 def update_prices():
-    users_lis = get_users()
-    for user in users_lis:
-        users_product_list = make_product_list(user)
+    users_list = util.get_existing_users()
+    print("Updating prices...")
+    for user in users_list:
+        users_product_list = util.make_product_list(user)
         for item in users_product_list:
             product_data = get_url_info(item.product_data.url)
-            price = product_data[1]
-            cur_date = date.today()
+            price = product_data.price
             # print(user + ":" + item.product_data.name + ": (" + str(price) + "," + str(cur_date) + ")")
-            res = upload_check_data(user, item.product_id, price, cur_date)
-            return res
+            res = util.upload_check_data(user, item.product_id, price, date.today())
+            # return res
 
-
-# returns a list of Products of a user
-def make_product_list(user):
-    dict_data = get_user_products(user)
-    users_product_list = []
-    for prod in dict_data:
-        product_data = get_product_data(user, prod)
-        data = from_dict(data_class=UtilProduct, data=product_data)
-        final_product = Product(prod, data)
-        users_product_list.append(final_product)
-
-    return users_product_list
-
-
-# ################## - End of Main Functions - ###################
 
 # ############################################ - TEST BENCH - ####################################################
-def test_push():
+
+
+def test_push_to_users():
     # 1.1
-    url = url_mediagalaxy
-    category = category_electronics
-    result = push_new_data_to_db("Terminator T1000", url, category)
+    url = test_url.mediagalaxy
+    category = cat.electronics
+    result = push_new_data_to_db(constant.test_user_terminator, url, category)
     print(result)
 
     # 1.2
-    url = url_cel
-    category = category_electronics
-    result = push_new_data_to_db("Terminator T1000", url, category)
+    url = test_url.cel
+    category = cat.electronics
+    result = push_new_data_to_db(constant.test_user_terminator, url, category)
     print(result)
 
     # 1.3
-    url = url_autovit
-    category = category_vehicles
-    result = push_new_data_to_db("Terminator T1000", url, category)
+    url = test_url.autovit
+    category = cat.vehicles
+    result = push_new_data_to_db(constant.test_user_terminator, url, category)
     print(result)
 
     # 2.1
-    url = url_marso
-    category = category_vehicles
-    result = push_new_data_to_db("Valaki mas", url, category)
+    url = test_url.marso
+    category = cat.vehicles
+    result = push_new_data_to_db(constant.test_user_john, url, category)
     print(result)
 
     # 2.2
-    url = url_marso
-    category = category_vehicles
-    result = push_new_data_to_db("Valaki mas", url, category)
+    url = test_url.marso
+    category = cat.vehicles
+    result = push_new_data_to_db(constant.test_user_john, url, category)
     print(result)
 
     # 3.1
-    url = url_footshop
-    category = category_clothing
-    result = push_new_data_to_db("En", url, category)
+    url = test_url.autovit
+    category = cat.vehicles
+    result = push_new_data_to_db(constant.test_user_mcGregor, url, category)
+    print(result)
+
+    # 3.2
+    url = test_url.footshop
+    category = cat.clothing
+    result = push_new_data_to_db(constant.test_user_mcGregor, url, category)
     print(result)
 
 
-# Users for testing purposes
-term = "Terminator T1000"
-en = "En"
-valaki = "Valaki mas"
-
-# test_push()
-
-
-
-
+def test_push_to_new(user, url, category):
+    firebase = fb.FirebaseApplication(database.firebase_link, None)
+    data = {
+        'url': url,
+        'category': category
+    }
+    response = firebase.post("NEW/" + user, data)
+    return response
 
 
+# test_push_to_users()
 
+# update_users()
+
+update_prices()
 
 # ############################################ - TEST BENCH - ####################################################
