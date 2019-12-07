@@ -69,6 +69,7 @@ def push_new_data_to_db(user, url, prod_category):
     data = get_url_info(url)
 
     firebase = fb.FirebaseApplication(database.firebase_link, None)
+    # firebase = fb.FirebaseApplication(database.bakcup_firebase_link, None)
 
     product_data = {
         'url': url,
@@ -79,7 +80,7 @@ def push_new_data_to_db(user, url, prod_category):
     }
 
     response = firebase.post("USERS/" + user, product_data)
-    prod_id = from_dict(Classes.class_FirebaseResponse, response).name
+    prod_id = from_dict(Classes.class_FirebaseResponse.FireBaseResponse, response).name
 
     check_data = {
         'price': data.price,
@@ -87,22 +88,38 @@ def push_new_data_to_db(user, url, prod_category):
     }
     response_check = firebase.post("USERS/" + user + "/" + prod_id + "/check", check_data)
 
+    print("Added " + user + "to database")
+    print("----------------")
+
     return prod_id
+
+
+def delete_user(user):
+    firebase = fb.FirebaseApplication(database.firebase_link, None)
+    delete_result = firebase.delete("/NEW", user)
+    return delete_result
 
 
 # goes over all new users or existing users who added new products and ads them to the main USERS folder
 def update_users():
     users_list = util.get_new_users()
     print("Updating users...")
+    print("----------------")
+
     for user in users_list:
         users_product_list = util.make_new_product_list(user)
         for item in users_product_list:
             push_new_data_to_db(user, item.product.url, item.product.category)
+        print("Product added to " + user + "'s list...")
+        print("Deleting " + user + " from NEW section")
+        delete_result = delete_user(user)
+        print("----------------")
 
 
 def update_prices():
     users_list = util.get_existing_users()
     print("Updating prices...")
+    print("----------------")
     for user in users_list:
         users_product_list = util.make_product_list(user)
         for item in users_product_list:
@@ -110,7 +127,8 @@ def update_prices():
             price = product_data.price
             # print(user + ":" + item.product_data.name + ": (" + str(price) + "," + str(cur_date) + ")")
             res = util.upload_check_data(user, item.product_id, price, date.today())
-            # return res
+        print("Updated " + user + "'s products prices")
+        print("----------------")
 
 
 # ############################################ - TEST BENCH - ####################################################
@@ -160,7 +178,7 @@ def test_push_to_users():
     print(result)
 
 
-def test_push_to_new(user, url, category):
+def push_to_new(user, url, category):
     firebase = fb.FirebaseApplication(database.firebase_link, None)
     data = {
         'url': url,
@@ -170,10 +188,24 @@ def test_push_to_new(user, url, category):
     return response
 
 
+def test_push_to_new():
+    url = test_url.altex
+    category = cat.electronics
+    result = push_to_new(constant.test_new_johnCena, url, category)
+    print(result)
+
+    url = test_url.quickmobile
+    category = cat.electronics
+    result = push_to_new(constant.test_new_theRock, url, category)
+    print(result)
+
+
+# test_push_to_new()
+
 # test_push_to_users()
 
 # update_users()
 
-update_prices()
+# update_prices()
 
 # ############################################ - TEST BENCH - ####################################################
