@@ -47,12 +47,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         private TextView productName;
         private TextView productDescription;
         private TextView productPrice;
+        private TextView productType;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             productImage = itemView.findViewById(R.id.productImage);
             productName = itemView.findViewById(R.id.productName);
             productDescription = itemView.findViewById(R.id.productDescription);
             productPrice = itemView.findViewById(R.id.productPrice);
+            productType = itemView.findViewById(R.id.productType);
         }
     }
 }

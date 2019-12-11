@@ -1,16 +1,22 @@
 package com.example.pricetracker.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.example.pricetracker.Models.Enums;
 
-public class Product {
+public class Product implements Parcelable {
     private int id;
     private String productName;
     private String productDescription;
     private String imageURL;
     private Enums.ProductType productType;
-    private double price;
+    private Double price;
 
-    public Product(int id, String productName, String productDescription, String imageURL, Enums.ProductType productType, double price) {
+    public Product(){
+
+    }
+    public Product(int id, String productName, String productDescription, String imageURL, Enums.ProductType productType, Double price) {
         this.id = id;
         this.productName = productName;
         this.productDescription = productDescription;
@@ -18,6 +24,18 @@ public class Product {
         this.productType = productType;
         this.price = price;
     }
+
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -39,7 +57,7 @@ public class Product {
         return productType;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
@@ -63,7 +81,29 @@ public class Product {
         this.productType = productType;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(productName);
+        dest.writeString(productDescription);
+        dest.writeDouble(price);
+        dest.writeString(productType.toString());
+
+    }
+
+    public Product(Parcel parcel){
+        productName = parcel.readString();
+        productDescription = parcel.readString();
+        price = parcel.readDouble();
+        productType = Enums.ProductType.valueOf(parcel.readString());
+        //imageURL = parcel.readString();
     }
 }

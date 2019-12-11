@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "1055968557219",
-    "firebase_url": "https://pricetracker-88a19.firebaseio.com",
-    "project_id": "pricetracker-88a19",
-    "storage_bucket": "pricetracker-88a19.appspot.com"
+    "project_number": "732067552368",
+    "firebase_url": "https://price-tracker-7cfd7.firebaseio.com",
+    "project_id": "price-tracker-7cfd7",
+    "storage_bucket": "price-tracker-7cfd7.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1055968557219:android:0a43224b48dd6570716716",
+        "mobilesdk_app_id": "1:732067552368:android:19727de7731d34549a28b5",
         "android_client_info": {
           "package_name": "com.example.pricetracker"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1055968557219-ksou7n8oqa5i3adhvlkdh824o9r965if.apps.googleusercontent.com",
+          "client_id": "732067552368-3qd32inh24h8uebci96s2i8d4l8vgpem.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pricetracker",
+            "certificate_hash": "05f156285fc49dd7fd2bebab20f3be5a0b10e3ad"
+          }
+        },
+        {
+          "client_id": "732067552368-0c2qjho6tkk6eps63b3ipkk6p9gj9e4f.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDJbZVVt2fl4TFTU-YdcY2CcrbZVF6Kft8"
+          "current_key": "AIzaSyCHrPJvWjgYKRKoM1LzHEqvW_Ee_qf3utc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1055968557219-ksou7n8oqa5i3adhvlkdh824o9r965if.apps.googleusercontent.com",
+              "client_id": "732067552368-0c2qjho6tkk6eps63b3ipkk6p9gj9e4f.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

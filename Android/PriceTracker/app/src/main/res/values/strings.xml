@@ -17,4 +17,8 @@
     <string name="productName">Product Name</string>
     <string name="productDescription">Product Description</string>
     <string name="productPrice">Product Price</string>
+    <string name="productType">Product Type</string>
+
+    <string name="productImage">Product Image</string>
+    <string name="openLinkButton">Open Link</string>
 </resources>

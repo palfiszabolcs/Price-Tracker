@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:layout_marginTop="10dp"
-            android:inputType="textPersonName"
+            android:inputType="textPassword"
             android:hint="@string/signUpPassword" />
 
         <EditText
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:layout_marginTop="10dp"
-            android:inputType="textPersonName"
+            android:inputType="textPassword"
             android:hint="@string/confirmPassword" />
 
         <Button
