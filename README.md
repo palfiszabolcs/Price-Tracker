@@ -7,7 +7,6 @@ Romanian:
 - flanco.ro
 - cel.ro
 - dedeman.ro
-- autovit.ro
 - altex.ro
 - evomag.ro
 - quickmobile.ro
@@ -18,6 +17,3 @@ Romanian:
 - marso.ro
 - hervis.ro
 - intersport.ro
-
-International:
-- ebay.com

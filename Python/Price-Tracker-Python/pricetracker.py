@@ -29,8 +29,8 @@ def get_url_info(url):
     if address == "dedeman.ro":
         return util.get_and_parse_dedeman(soup)
 
-    if address == "autovit.ro":
-        return util.get_and_parse_autovit(soup)
+    # if address == "autovit.ro":
+    #     return util.get_and_parse_autovit(soup)
 
     if address == "altex.ro":
         return util.get_and_parse_altex(soup)
@@ -59,9 +59,9 @@ def get_url_info(url):
     if address == "intersport.ro":
         return util.get_and_parse_intersport(soup)
 
-    # !!!!! Resolve exception when advert is no longer active !!!!
-    if address == "ebay.com":
-        return util.get_and_parse_ebay(soup)
+    # # !!!!! Resolve exception when advert is no longer active !!!!
+    # if address == "ebay.com":
+    #     return util.get_and_parse_ebay(soup)
 
 
 def push_new_data_to_db(user, url, prod_category):
@@ -136,45 +136,93 @@ def update_prices():
 
 def test_push_to_users():
     # 1.1
-    url = test_url.mediagalaxy
+    url = test_url.flanco
     category = cat.electronics
-    result = push_new_data_to_db(constant.test_user_terminator, url, category)
+    result = push_new_data_to_db("Devin Clarkson", url, category)
     print(result)
 
     # 1.2
-    url = test_url.cel
+    url = test_url.quickmobile
     category = cat.electronics
-    result = push_new_data_to_db(constant.test_user_terminator, url, category)
+    result = push_new_data_to_db("Devin Clarkson", url, category)
     print(result)
 
     # 1.3
-    url = test_url.autovit
-    category = cat.vehicles
-    result = push_new_data_to_db(constant.test_user_terminator, url, category)
+    url = test_url.altex
+    category = cat.electronics
+    result = push_new_data_to_db("Devin Clarkson", url, category)
     print(result)
 
     # 2.1
     url = test_url.marso
     category = cat.vehicles
-    result = push_new_data_to_db(constant.test_user_john, url, category)
+    result = push_new_data_to_db("Komal Gates", url, category)
     print(result)
 
     # 2.2
-    url = test_url.marso
-    category = cat.vehicles
-    result = push_new_data_to_db(constant.test_user_john, url, category)
+    url = test_url.dedeman
+    category = cat.other
+    result = push_new_data_to_db("Komal Gates", url, category)
     print(result)
 
     # 3.1
-    url = test_url.autovit
-    category = cat.vehicles
+    url = test_url.footshop
+    category = cat.clothing
     result = push_new_data_to_db(constant.test_user_mcGregor, url, category)
     print(result)
 
     # 3.2
-    url = test_url.footshop
-    category = cat.clothing
+    url = test_url.mediagalaxy
+    category = cat.electronics
     result = push_new_data_to_db(constant.test_user_mcGregor, url, category)
+    print(result)
+
+    # 4
+    url = test_url.megaproteine
+    category = cat.sports
+    result = push_new_data_to_db("Adina Watson", url, category)
+    print(result)
+
+    # 5.1
+    url = test_url.cel
+    category = cat.electronics
+    result = push_new_data_to_db("Arun Baker", url, category)
+    print(result)
+
+    # 5.2
+    url = test_url.cel
+    category = cat.electronics
+    result = push_new_data_to_db("Arun Baker", url, category)
+    print(result)
+
+    # 5.3
+    url = test_url.emag
+    category = cat.electronics
+    result = push_new_data_to_db("Arun Baker", url, category)
+    print(result)
+
+    # 6
+    url = test_url.megaproteine
+    category = cat.sports
+    result = push_new_data_to_db("Adina Watson", url, category)
+    print(result)
+
+    # 7.1
+    url = test_url.gymbeam
+    category = cat.sports
+    result = push_new_data_to_db("Elise Russo", url, category)
+    print(result)
+
+    # 7.2
+    url = test_url.intersport
+    category = cat.sports
+    result = push_new_data_to_db("Elise Russo", url, category)
+    print(result)
+
+    # 7.2
+    url = test_url.sportisimo
+    category = cat.sports
+    result = push_new_data_to_db("Elise Russo", url, category)
     print(result)
 
 
@@ -207,5 +255,6 @@ def test_push_to_new():
 # update_users()
 
 # update_prices()
+
 
 # ############################################ - TEST BENCH - ####################################################
