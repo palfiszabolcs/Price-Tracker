@@ -21,4 +21,12 @@
 
     <string name="productImage">Product Image</string>
     <string name="openLinkButton">Open Link</string>
+    <string name="url">URL</string>
+    <string name="openLink">Open link:</string>
+    <string name="currency">Currency</string>
+    <string name="viewChart">View Statistics</string>
+    <string name="addNewProduct">Add new product:</string>
+    <string name="yourProducts">Your products:</string>
+    <string name="addUrl">Add Url</string>
+    <string name="price">Price</string>
 </resources>

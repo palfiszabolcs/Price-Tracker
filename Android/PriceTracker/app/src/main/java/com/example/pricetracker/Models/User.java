@@ -5,42 +5,38 @@ import com.example.pricetracker.Models.Product;
 import java.util.ArrayList;
 
 public class User {
-    private String userName;
-    private String email;
-    private String password;
-    private ArrayList<Product> products = new ArrayList<>();
+    private String Name;
+    private String Email;
+    private String Password;
 
-    public User(String userName, String email, String password) {
-        this.userName = userName;
-        this.email = email;
-        this.password = password;
+    public User(String Name, String Email, String Password) {
+        this.Name = Name;
+        this.Email = Email;
+        this.Password = Password;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return Name;
     }
 
     public String getEmail() {
-        return email;
+        return Email;
     }
 
     public String getPassword() {
-        return password;
+        return Password;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String Name) {
+        this.Name = Name;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(String Email) {
+        this.Email = Email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPassword(String Password) {
+        this.Password = Password;
     }
 
-    public void addProduct(Product product){
-        products.add(product);
-    }
 }

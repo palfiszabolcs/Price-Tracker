@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/colorWhite"
-                android:background="@color/colorBlue"
+                android:background="@drawable/btn_rounded"
                 android:text="@string/signInButton" />
 
         </LinearLayout>

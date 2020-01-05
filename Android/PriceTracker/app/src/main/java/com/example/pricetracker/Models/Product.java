@@ -5,24 +5,27 @@ import android.os.Parcelable;
 
 import com.example.pricetracker.Models.Enums;
 
+import java.util.ArrayList;
+
 public class Product implements Parcelable {
-    private int id;
-    private String productName;
-    private String productDescription;
-    private String imageURL;
-    private Enums.ProductType productType;
-    private Double price;
+    private String category;
+    private String currency;
+    private String imageUrl;
+    private String name;
+    private String url;
+    private ArrayList<Check> check;
 
-    public Product(){
 
+    public Product() {
     }
-    public Product(int id, String productName, String productDescription, String imageURL, Enums.ProductType productType, Double price) {
-        this.id = id;
-        this.productName = productName;
-        this.productDescription = productDescription;
-        this.imageURL = imageURL;
-        this.productType = productType;
-        this.price = price;
+
+    public Product(String category, String currency, String imageUrl, String name, String url, ArrayList<Check> check) {
+        this.category = category;
+        this.currency = currency;
+        this.imageUrl = imageUrl;
+        this.name = name;
+        this.url = url;
+        this.check = check;
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {
@@ -37,52 +40,49 @@ public class Product implements Parcelable {
         }
     };
 
-    public int getId() {
-        return id;
+    public String getCategory() {
+        return category;
     }
 
-    public String getProductName() {
-        return productName;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public String getProductDescription() {
-        return productDescription;
+    public String getCurrency() {
+        return currency;
     }
 
-    public String getImageURL() {
-        return imageURL;
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
-    public Enums.ProductType getProductType() {
-        return productType;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public Double getPrice() {
-        return price;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getName() {
+        return name;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setProductDescription(String productDescription) {
-        this.productDescription = productDescription;
+    public String getUrl() {
+        return url;
     }
 
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public void setProductType(Enums.ProductType productType) {
-        this.productType = productType;
-    }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setCheck(ArrayList<Check> check) {
+        this.check = check;
     }
 
     @Override
@@ -90,20 +90,19 @@ public class Product implements Parcelable {
         return 0;
     }
 
+    public Product(Parcel parcel) {
+        category = parcel.readString();
+        currency = parcel.readString();
+        imageUrl = parcel.readString();
+        name = parcel.readString();
+        url = parcel.readString();
+    }
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(productName);
-        dest.writeString(productDescription);
-        dest.writeDouble(price);
-        dest.writeString(productType.toString());
-
-    }
-
-    public Product(Parcel parcel){
-        productName = parcel.readString();
-        productDescription = parcel.readString();
-        price = parcel.readDouble();
-        productType = Enums.ProductType.valueOf(parcel.readString());
-        //imageURL = parcel.readString();
+        dest.writeString(category);
+        dest.writeString(currency);
+        dest.writeString(imageUrl);
+        dest.writeString(name);
+        dest.writeString(url);
     }
 }

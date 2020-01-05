@@ -5,12 +5,13 @@
     <application
         android:name="androidx.multidex.MultiDexApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/pt3"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Database.FirebaseViewHolder"></activity>
+        <activity android:name=".Activities.ChartActivity"></activity>
+        <activity android:name=".Database.FirebaseViewHolder" />
         <activity android:name=".Activities.ProductDetailActivity" />
         <activity android:name=".Activities.DashboardActivity" />
         <activity android:name=".Activities.RegisterActivity" />

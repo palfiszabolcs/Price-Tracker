@@ -14,18 +14,18 @@ import com.example.pricetracker.R;
 public class FirebaseViewHolder extends RecyclerView.ViewHolder {
 
 
-    public ImageView productImage;
-    public TextView productName;
-    public TextView productDescription;
-    public TextView productPrice;
-    public TextView productType;
+    public ImageView image;
+    public TextView name;
+    public TextView price;
+    public TextView currency;
+    public TextView category;
 
     public FirebaseViewHolder(@NonNull View itemView) {
         super(itemView);
-        productImage = itemView.findViewById(R.id.productImage);
-        productName = itemView.findViewById(R.id.productName);
-        productDescription = itemView.findViewById(R.id.productDescription);
-        productPrice = itemView.findViewById(R.id.productPrice);
-        productType = itemView.findViewById(R.id.productType);
+        image = itemView.findViewById(R.id.productImage);
+        name = itemView.findViewById(R.id.productName);
+        category = itemView.findViewById(R.id.productType);
+        price = itemView.findViewById(R.id.price);
+        currency = itemView.findViewById(R.id.currency);
     }
 }
