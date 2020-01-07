@@ -2,8 +2,10 @@ package com.example.pricetracker.Database;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,6 +21,7 @@ public class FirebaseViewHolder extends RecyclerView.ViewHolder {
     public TextView price;
     public TextView currency;
     public TextView category;
+    public CardView card;
 
     public FirebaseViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -27,5 +30,9 @@ public class FirebaseViewHolder extends RecyclerView.ViewHolder {
         category = itemView.findViewById(R.id.productType);
         price = itemView.findViewById(R.id.price);
         currency = itemView.findViewById(R.id.currency);
+        card = itemView.findViewById(R.id.cardView);
+        //card.setBackgroundColor(Color.TRANSPARENT);
+        card.getBackground().setAlpha(128);
+        //card.setCardElevation(0);
     }
 }

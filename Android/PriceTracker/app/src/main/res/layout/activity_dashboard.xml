@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/top_of_the_building"
     tools:context=".Activities.DashboardActivity"
     tools:showIn=""
-    android:layout_margin="20dp"
     >
 
 

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.pricetracker.Models.User;
@@ -27,10 +28,21 @@ public class RegisterActivity extends AppCompatActivity {
     private Button confirmButton;
     private FirebaseDatabase database;
     private DatabaseReference reference;
+    private LinearLayout layout;
+
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        super.onBackPressed();
+        RegisterActivity.this.overridePendingTransition(R.anim.splash_in,
+                R.anim.splash_out);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        overridePendingTransition(R.anim.splash_in, R.anim.splash_out);
         getIds();
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +62,8 @@ public class RegisterActivity extends AppCompatActivity {
         signUpPassword = findViewById(R.id.signUpPassword);
         confirmPassword = findViewById(R.id.confirmPassword);
         confirmButton = findViewById(R.id.confirmButton);
+        layout = findViewById(R.id.layout);
+        layout.getBackground().setAlpha(60);
     }
 
     public void addNewUser(){

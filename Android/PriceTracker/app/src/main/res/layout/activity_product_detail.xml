@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/top_of_the_building"
     tools:context=".Activities.ProductDetailActivity">
 <ScrollView
     android:layout_width="match_parent"
@@ -27,13 +28,15 @@
         <TextView
             android:id="@+id/name"
             android:layout_marginTop="30dp"
-            android:textSize="16dp"
+            android:textSize="17dp"
             android:textStyle="bold"
             android:textAlignment="center"
             android:layout_marginBottom="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/colorGrey"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:text="Product name" />
 
         <LinearLayout
@@ -91,7 +94,9 @@
                     android:text="category"
                     android:textAlignment="center"
                     android:textSize="14dp"
-                    android:textStyle="italic" />
+                    android:textStyle="bold"
+                    android:textColor="@color/colorBlack"
+                    />
             </LinearLayout>
 
         </LinearLayout>
@@ -125,6 +130,7 @@
             android:layout_gravity="center"
             android:textColor="@color/colorWhite"
             android:background="@drawable/btn_rounded"
+            android:padding="5dp"
             android:text="@string/viewChart"/>
 
 

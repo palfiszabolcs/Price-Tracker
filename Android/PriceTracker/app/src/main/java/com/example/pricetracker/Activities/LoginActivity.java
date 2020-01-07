@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,13 +31,23 @@ public class LoginActivity extends AppCompatActivity {
     private Button signInButton;
     private TextView registerLink;
     private Boolean saveLogin;
+    private LinearLayout layout;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        super.onBackPressed();
+        LoginActivity.this.overridePendingTransition(R.anim.splash_in,
+                R.anim.splash_out);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        overridePendingTransition(R.anim.splash_in, R.anim.splash_out);
         getIds();
         registerLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,5 +131,7 @@ public class LoginActivity extends AppCompatActivity {
         registerLink = findViewById(R.id.registerLink);
         sharedPreferences = getSharedPreferences("loginref", MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        layout = findViewById(R.id.layout);
+        layout.getBackground().setAlpha(60);
     }
 }

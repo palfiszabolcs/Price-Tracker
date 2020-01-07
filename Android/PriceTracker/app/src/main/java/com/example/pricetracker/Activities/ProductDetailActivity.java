@@ -46,11 +46,21 @@ public class ProductDetailActivity extends AppCompatActivity {
     private ImageView productImage;
     final Map <String, Double> map = new HashMap<>();
 
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        super.onBackPressed();
+        ProductDetailActivity.this.overridePendingTransition(R.anim.splash_in,
+                R.anim.splash_out);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
+        overridePendingTransition(R.anim.splash_in, R.anim.splash_out);
+        setTitle("Product detail");
         Product product = getIntent().getParcelableExtra("product");
         //Toast.makeText(this, product.getProductName() + " " + product.getProductDescription(), Toast.LENGTH_SHORT).show();
         setContents(product);
@@ -78,6 +88,17 @@ public class ProductDetailActivity extends AppCompatActivity {
         category.setText(product.getCategory());
         currency.setText(product.getCurrency());
         price.setText(getIntent().getStringExtra("price"));
+
+        if(product.getCategory().equals("Sports"))
+            productImage.setImageResource(R.drawable.sports);
+        if(product.getCategory().equals("Vehicles"))
+            productImage.setImageResource(R.drawable.vehicles);
+        if(product.getCategory().equals("Clothing"))
+            productImage.setImageResource(R.drawable.clothing);
+        if(product.getCategory().equals("Other"))
+            productImage.setImageResource(R.drawable.other);
+        if(product.getCategory().equals("Electronics"))
+            productImage.setImageResource(R.drawable.electronics);
 
     }
 

@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/top_of_the_building"
     tools:context=".Activities.ChartActivity">
 
-    <com.github.mikephil.charting.charts.LineChart
+    <com.github.mikephil.charting.charts.BarChart
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/lineChart">
+        android:layout_height="400sp"
+        android:layout_marginTop="50dp"
+        android:id="@+id/barchart">
 
-    </com.github.mikephil.charting.charts.LineChart>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </com.github.mikephil.charting.charts.BarChart>
+
+</RelativeLayout>

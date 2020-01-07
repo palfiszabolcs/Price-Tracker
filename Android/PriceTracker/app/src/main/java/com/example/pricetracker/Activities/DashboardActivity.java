@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.PersistableBundle;
@@ -27,6 +28,7 @@ import com.example.pricetracker.Adapters.ProductAdapter;
 import com.example.pricetracker.Database.FirebaseViewHolder;
 import com.example.pricetracker.Models.Check;
 import com.example.pricetracker.Models.Enums;
+import com.example.pricetracker.Models.Enums.ProductType;
 import com.example.pricetracker.Models.Product;
 import com.example.pricetracker.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -60,6 +62,14 @@ public class DashboardActivity extends AppCompatActivity implements AdapterView.
 
     private final String KEY_RECYCLER_STATE = "recycler_state";
     private static Bundle mBundleRecyclerViewState;
+
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        super.onBackPressed();
+        DashboardActivity.this.overridePendingTransition(R.anim.splash_in,
+                R.anim.splash_out);
+    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -107,6 +117,7 @@ public class DashboardActivity extends AppCompatActivity implements AdapterView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        overridePendingTransition(R.anim.splash_in, R.anim.splash_out);
         registeredUser = getIntent().getStringExtra("Username");
         setTitle("Hello " + registeredUser + "!");
         initialize();
@@ -154,7 +165,7 @@ public class DashboardActivity extends AppCompatActivity implements AdapterView.
 
     public static String[] getTypes(){
         LinkedList<String> types = new LinkedList<>();
-        for(Enums.ProductType p : Enums.ProductType.values()){
+        for(ProductType p : ProductType.values()){
             types.add(p.name());
         }
         return types.toArray(new String[(types.size())]);
@@ -183,6 +194,19 @@ public class DashboardActivity extends AppCompatActivity implements AdapterView.
                 holder.category.setText(model.getCategory());
                 holder.currency.setText(model.getCurrency());
                 //holder.price.setText(currentPrice.toString());
+                String imageUrl = model.getCategory().toLowerCase();
+                if(model.getCategory().equals("Sports"))
+                    holder.image.setImageResource(R.drawable.sports);
+                if(model.getCategory().equals("Vehicles"))
+                    holder.image.setImageResource(R.drawable.vehicles);
+                if(model.getCategory().equals("Clothing"))
+                    holder.image.setImageResource(R.drawable.clothing);
+                if(model.getCategory().equals("Other"))
+                    holder.image.setImageResource(R.drawable.other);
+                if(model.getCategory().equals("Electronics"))
+                    holder.image.setImageResource(R.drawable.electronics);
+
+                //holder.image.setImageURI(Uri.parse(R.drawable.imageUrl + ".jpg"));
                 holder.itemView.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
@@ -192,6 +216,7 @@ public class DashboardActivity extends AppCompatActivity implements AdapterView.
                         intent.putExtra("key", key);
                         intent.putExtra("username", registeredUser);
                         startActivity(intent);
+
                     }
                 });
             }

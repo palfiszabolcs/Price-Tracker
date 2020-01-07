@@ -4,17 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/top_of_the_building"
     tools:context=".Activities.LoginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:id="@+id/layout"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_margin="30dp"
         tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp">
+        tools:layout_editor_absoluteY="1dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:background="@color/colorWhite"
+        >
 
         <TextView
             android:id="@+id/loginTitle"

@@ -9,4 +9,7 @@
     <color name="colorDarkGrey">#666666</color>
     <color name="colorBlack">#010203</color>
     <color name="colorGrey">#2c2c2c</color>
+    <color name="colorCyan">#5b6366</color>
+    <color name="colorTransparent">#f4ecc2</color>
+    <color name="darkBlue">#17305c</color>
 </resources>
