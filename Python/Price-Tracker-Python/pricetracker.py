@@ -254,7 +254,7 @@ def test_push_to_new():
 
 # update_users()
 
-# update_prices()
+update_prices()
 
 
 # ############################################ - TEST BENCH - ####################################################

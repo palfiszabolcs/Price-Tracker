@@ -300,7 +300,7 @@ def get_and_parse_marso(soup):
 
 def get_and_parse_intersport(soup):
     title = soup.find("title").text.strip()
-    price = find_price(soup, "span", "price")
+    price = find_price(soup, "span", "offer")
     price = re.sub("LEI", '', price)
     price = re.sub(",", '.', price)
     price = float(price)
